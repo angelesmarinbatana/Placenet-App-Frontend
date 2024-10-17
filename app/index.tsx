@@ -3,7 +3,7 @@ import { Text, View, /* @tutinfo Import <CODE>StyleSheet</CODE> to define styles
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, Welcome to Placenet!</Text>
+      <Text style={styles.text}>Yo, Welcome to Placenet!</Text>
     </View>
   );
 }
