@@ -8,6 +8,16 @@ export default function Index() {
       <Link href="/about" style={styles.button}>
         Go to About screen
       </Link>
+      <Link href="/propManagement" style={styles.button}>
+        Property Management
+      </Link>
+      <Link href="/projManagement" style={styles.button}>
+        Project Management
+      </Link>
+      <Link href="/docManage" style={styles.button}>
+        Document Management
+      </Link>
+
     </View>
   );
 }
