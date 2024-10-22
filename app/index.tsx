@@ -15,6 +15,7 @@ export default function Index() {
       onPress={() => router.push('/main')} //when clicked, go to main menu 
       color="#E8F3FF" //change "Click to Enter" color 
       />
+
     </View>
   );
 }
@@ -30,5 +31,10 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontSize: 25,
+  },
+
+  button:{
+    fontSize:10,
+    color: '#0ff'
   },
 });
