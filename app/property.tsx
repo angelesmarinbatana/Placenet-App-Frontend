@@ -10,11 +10,11 @@ export default function PropertyManagement() {
    
     const handleAddProperty = () => { //function to handle adding properties 
         if (propertyAddress) {
-          // display success message ;
-          // set the property address 
+          //success message ;
+          // set address 
         } else {
-          // display failure message 
-        }
+          //  failure message 
+        }// end if else 
       };
     
       return (
