@@ -24,7 +24,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    /* @tutinfo Add the value of <CODE>backgroundColor</CODE> property with <CODE>'#25292e'</CODE>.*/
     backgroundColor: '#25292e',
     alignItems: 'center',
     justifyContent: 'center',
