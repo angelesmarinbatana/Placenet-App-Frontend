@@ -6,13 +6,14 @@ import React, { useState } from 'react';
 */
 
 export default function ProjectManagement() {
+    //need 2 const: 1. project name; 2. project description 
     const [projectName, setProjectName] = useState('');
-    //const project description 
+
 
     const handleAddProject = () => {
-        if (projectName /*and project description*/) {
+        if (projectName) {
             //success message 
-            //set name 
+
         } else {
             //error message 
         }// end if else 
@@ -21,7 +22,7 @@ export default function ProjectManagement() {
     return (
         <View style={styles.container}>
           <TextInput 
-            //style text input 
+          //syle 
           />
           <Button 
             title="Add a Project" 
