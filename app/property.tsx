@@ -36,4 +36,4 @@ export default function PropertyManagement() {
         alignItems: 'center',
         justifyContent: 'center',
       },
-    });
+    }); 
