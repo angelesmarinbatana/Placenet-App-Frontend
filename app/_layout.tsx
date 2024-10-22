@@ -1,11 +1,12 @@
-//
-//This file sets up the navigation stack 
-//
-
 import { Stack } from 'expo-router';
+
+/* 
+  NAVIGATION STRUCTURE  
+*/
 
 export default function RootLayout() {
   return (
+    //DIFFERENT PAGES IN APP: 
     <Stack>
       <Stack.Screen name="index" options={{ title: 'Welcome' }} />
       <Stack.Screen name="main" options={{ title: 'Main Menu' }} />
