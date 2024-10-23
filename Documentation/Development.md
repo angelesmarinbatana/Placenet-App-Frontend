@@ -8,7 +8,7 @@ Before getting started, make sure you have a code editor for running (we use Vis
 1. **Node JS**
     * Install Node.JS: https://nodejs.org/en
       
-2.**EXPO**
+2. **EXPO**
     * Sign Up for Expo: https://expo.dev/signup
     * Install Expo locally: [npx create-expo-app@latest](https://docs.expo.dev/more/expo-cli/)
     * Intsall Expo Mobile App: https://apps.apple.com/us/app/expo-go/id982107779
