@@ -27,11 +27,12 @@ From Github:
   
       
 In your code editor:
-2. Navigate to the Project Directory
+
+1. Navigate to the Project Directory
      * cd Placenet 
-3. Install Dependencies
+2. Install Dependencies
      * npm install
-4. Start the App
+3. Start the App
      * npx expo start
 
 ## Running App on Device
