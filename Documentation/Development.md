@@ -7,11 +7,13 @@ Before getting started, make sure you have a code editor for running (we use Vis
 ## Installations
 1. **Node JS**
     * Install Node.JS: https://nodejs.org/en
+      
 2.**EXPO**
     * Sign Up for Expo: https://expo.dev/signup
     * Install Expo locally: [npx create-expo-app@latest](https://docs.expo.dev/more/expo-cli/)
     * Intsall Expo Mobile App: https://apps.apple.com/us/app/expo-go/id982107779
     * Log in
+   
 3. **EXPO Router**
     * Install Expo Router https://docs.expo.dev/router/installation/ 
 
@@ -21,11 +23,11 @@ Before getting started, make sure you have a code editor for running (we use Vis
 ## Getting the Placenet App 
 1. Clone the Repository
     * git clone https://github.com/angelesmarin/Placenet.git
-3. Navigate to the Project Directory
+2. Navigate to the Project Directory
      * cd Placenet 
-5. Install Dependencies
+3. Install Dependencies
      * npm install
-6. Start the App
+4. Start the App
      * npx expo start
 
 ## Running App on Device
@@ -33,6 +35,6 @@ Before getting started, make sure you have a code editor for running (we use Vis
 2. Scan QR code displayed from the terminal
 
 ### Optional: Running App on Web Browser 
-1. In code editor terminal, select W to launch the app on your local web browser.
+   *  In code editor terminal, select W to launch the app on your local web browser.
 
 ### For more information, visit Expo website: https://expo.dev/ 
