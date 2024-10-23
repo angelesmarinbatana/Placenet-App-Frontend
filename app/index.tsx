@@ -13,7 +13,7 @@ export default function Index() {
 
       <Button
       title="Click to Enter" //button
-      onPress={() => router.push('/main')} //when clicked, go to 'main menu' 
+      onPress={() => router.push('/sign_in')} //when clicked, go to 'main menu' 
       color="#E8F3FF" //change 'Click to Enter' color 
       />
 
