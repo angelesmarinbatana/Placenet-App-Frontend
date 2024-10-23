@@ -24,6 +24,8 @@ Before getting started, make sure you have a code editor for running (we use Vis
 From Github: 
 1. Clone the Repository
     * git clone https://github.com/angelesmarin/Placenet.git
+  
+      
 In your code editor:
 2. Navigate to the Project Directory
      * cd Placenet 
