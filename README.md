@@ -4,7 +4,9 @@
 This is the default branch for Placenet, our React Native mobile application. 
    * Our **main** branch is protected as operational code, and there are no direct commits.
    * The **development** branch is a result of merging feature branching branches
-   * Our features are encapulated into branches for modularity, they are labeled: FB--[feature branch name]. 
+   * Our features are encapulated into branches for modularity, they are labeled:
+     * FB--[feature branch name]: for **front end** features
+     * BB--[feature branch name]: for **back end** features 
 
 ## Running Placenet App
 This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
