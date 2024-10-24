@@ -18,14 +18,18 @@ Before getting started, make sure you have a code editor for running (we use Vis
     * Install Expo Router https://docs.expo.dev/router/installation/ 
 
 4. **Watchman**
-    * Install Watchman: https://facebook.github.io/watchman/docs/install 
+    * Install Watchman: https://facebook.github.io/watchman/docs/install
+We installed Watchman to help with app file handling, as the operating system might limit files that can be watched by a single app.
 
 ## Getting the Placenet App 
 From Github: 
 1. Clone the Repository
     * git clone https://github.com/angelesmarin/Placenet.git
   
-      
+In your terminal:
+   *  watchman watch [path to Placenet project directory]
+      *  This ensures that watchman is watching your project
+
 In your code editor:
 
 1. Navigate to the Project Directory
