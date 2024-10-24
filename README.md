@@ -1,7 +1,10 @@
-# Placenet App
+# Welcome To Placenet App! 👋
 
 ## Information on our Repository
-This is the default branch for Placenet, a React Native mobile application. Our main branch is protected as operational code, and there are no direct commits. This code is a result of merging feature branching branches, labeled as bracnhes: FB- [branch name]. 
+This is the default branch for Placenet, our React Native mobile application. 
+   * Our **main** branch is protected as operational code, and there are no direct commits.
+   * The **development** branch is a result of merging feature branching branches
+   * Our features are encapulated into branches for modularity, they are labeled: FB--[feature branch name]. 
 
 ## Running Placenet App
 This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
