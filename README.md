@@ -1,55 +1,54 @@
-<<<<<<< HEAD
-# Welcome to your Expo app 👋
+# Placenet App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Information on our Repository
+This is the default branch for Placenet, a React Native mobile application. Our main branch is protected as operational code, and there are no direct commits. This code is a result of merging feature branching branches, labeled as bracnhes: FB- [branch name]. 
 
-## Get started
+## Running Placenet App
+This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
 
-1. Install dependencies
+Before getting started, make sure you have a code editor for running (we use Visual Studio Code)
+* VS Code: https://code.visualstudio.com/download
 
-   ```bash
-   npm install
-   ```
+## Installations
+1. **Node JS**
+    * Install Node.JS: https://nodejs.org/en
+      
+2. **EXPO**
+    * Sign Up for Expo: https://expo.dev/signup
+    * Install Expo locally: [npx create-expo-app@latest](https://docs.expo.dev/more/expo-cli/)
+    * Intsall Expo Mobile App: https://apps.apple.com/us/app/expo-go/id982107779
+    * Log in
+   
+3. **EXPO Router**
+    * Install Expo Router https://docs.expo.dev/router/installation/ 
 
-2. Start the app
+4. **Watchman**
+    * Install Watchman: https://facebook.github.io/watchman/docs/install
+We installed Watchman to help with app file handling, as the operating system might limit files that can be watched by a single app.
 
-   ```bash
-    npx expo start
-   ```
+## Getting the Placenet App 
+From Github: 
+1. Clone the Repository
+    * git clone https://github.com/angelesmarin/Placenet.git
+  
+In your terminal:
+   *  watchman watch [path to Placenet project directory]
+      *  This ensures that watchman is watching your project
 
-In the output, you'll find options to open the app in a
+In your code editor:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. Navigate to the Project Directory
+     * cd Placenet 
+2. Install Dependencies
+     * npm install
+3. Start the App
+     * npx expo start
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Running App on Device
+1. Open EXPO GO mobile application on your device
+2. Scan QR code displayed from the terminal
 
-## Get a fresh project
+### Optional: Running App on Web Browser 
+   *  In code editor terminal, select W to launch the app on your local web browser.
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-=======
-# Placenet
-Code for Placenet App
->>>>>>> c1d565b07724a169e6f77eb69a2ce5c8e6dde745
+### For more information, visit Expo website: https://expo.dev/ 
