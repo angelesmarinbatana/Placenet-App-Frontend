@@ -1,7 +1,7 @@
 # Running Placenet App
 This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
 
-Before getting started, make sure you have a code editor for running (we use Visual Studio Code for)
+Before getting started, make sure you have a code editor for running (we use Visual Studio Code)
 * VS Code: https://code.visualstudio.com/download
 
 ## Installations
