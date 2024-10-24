@@ -1,4 +1,4 @@
-# Welcome To Placenet App! 👋
+# Welcome To Placenet App!
 
 ## Information on our Repository
 This is the default branch for Placenet, our React Native mobile application. 
