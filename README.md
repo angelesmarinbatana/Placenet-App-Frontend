@@ -9,7 +9,7 @@ This our front end repository for Placenet, our React Native mobile application.
      * BB--[feature branch name]: for **back end** features
 
     
-  **Take a look at our backend: [backend](https://github.com/angelesmarin/Placenet-App-Backend/tree/development)**
+  **Take a look at our backend!: [backend](https://github.com/angelesmarin/Placenet-App-Backend/tree/development)**
 
 
 ## Running Placenet App
