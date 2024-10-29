@@ -1,15 +1,41 @@
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { FormEvent } from 'react';
+import { useRouter } from 'expo-router'
+import { StyleSheet, TextInput } from 'react-native';
+import { Button } from 'react-native'
 import React from 'react';
-import {StyleSheet, TextInput, Button} from 'react-native'; // need to import on every page -> import things from react native lib
-import { useRouter } from 'expo-router'; // need to import on every page -> for app routing 
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
+ 
+export default function LoginPage() {
+  const router = useRouter()
+  const [username, onChangeUser] = React.useState('Username');
+  const [password, onChangePassword] = React.useState('Password');
+ 
+  function handleSubmit() {
+    //event.preventDefault()
+    if (username == "lala" && password == "lala") {    //scuffed "authentication"
+      router.push('/main')
+    }
+    /*const formData = new FormData(event.currentTarget)
+    const email = formData.get('email')
+    const password = formData.get('password')
+ 
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+ 
+    if (response.ok) {
+      router.push('/main')
+    } else {
+      // Handle errors
+    }*/
 
-const TextFields = () => { //make resuable component 
-    const router = useRouter();
-    const [username, onChangeUser] = React.useState('Username');
-    const [password, onChangePassword] = React.useState('Password');
-
-    return (
-        <SafeAreaProvider>
+      //TODO: Actual auth implementation, commented code is for that exact purpose, pls dont touch <3
+  }
+ 
+  return (
+    <SafeAreaProvider>
           <SafeAreaView>
             <TextInput
               style={styles.input}
@@ -23,22 +49,20 @@ const TextFields = () => { //make resuable component
             />
             <Button
                 title="Sign In" //button
-                onPress={() => router.push('/main')} //when clicked, go to 'main menu' 
+                onPress={handleSubmit} //when clicked, go to 'main menu' 
                 color="#000000" //change 'Click to Enter' color 
             />
           </SafeAreaView>
         </SafeAreaProvider>
       );
-    
+  
 }
 
 const styles = StyleSheet.create({
-    input: {
-      height: 40,
-      margin: 12,
-      borderWidth: 1,
-      padding: 10,
-    },
-  });
-
-export default TextFields;
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
