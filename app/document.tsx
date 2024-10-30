@@ -1,4 +1,4 @@
-import { View, Button, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Button, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import * as DocumentPicker from "expo-document-picker"
 //import lib for documents 
@@ -7,25 +7,55 @@ import * as DocumentPicker from "expo-document-picker"
   'DOCUMENT'PAGE  
 */
 
-
-
 const UploadFile = () => {
-  const [fileUri,  setFileUri] = useState(null);
-  const [fileType, setFileType] = useState(null);
+  const [selectedDocuments, setSelectedDocuments] = useState<DocumentPicker.DocumentPickerAsset[]>([]);
 
   const pickDocument = async () => {
     try{
-      let result = await DocumentPicker.getDocumentAsync({});
-      if (result.type === 'success') {
-        setFileUri(result.uri);
-        setFileType(result.name.split('.').pop());
-        console.log('File URI: ', result.uri);
-        console.log('File Name: ', result.name);
+      const result = await DocumentPicker.getDocumentAsync({ multiple: true});
+      if (!result.canceled) {
+        const successResult = result as DocumentPicker.DocumentPickerSuccessResult;
+
+        if (selectedDocuments.length + successResult.assets.length <= 5) {
+          console.log('Hello')
+          setSelectedDocuments((prevSelectedDocuments) => [
+            ...prevSelectedDocuments,
+            ...successResult.assets,
+          ]);
+        } else {
+          console.log("Maximim of 5 documents allowed.");
+        }
+      } else {
+        console.log("Document selection cancelled.");
       }
-    } catch (error) {
-      console.error('Error picking document: ', error);
+    } catch (error){
+      console.log("Error picking documents:", error)
     }
   };
+
+   // Additional code snippet to get the document type 
+const getFileType = (fileName: string): string => {
+  const extension = fileName.split('.').pop()?.toLowerCase();
+  switch (extension) {
+    case 'pdf':
+      return 'PDF';
+    case 'doc':
+    case 'docx':
+      return 'Word';
+    case 'xls':
+    case 'xlsx':
+      return 'Excel';
+    default:
+      return 'Unknown';
+  }
+};
+
+// Remove a document from the array 
+const removeDocument = (index: number) => {
+  setSelectedDocuments((prevSelectedDocuments) =>
+    prevSelectedDocuments.filter((_, i) => i !== index)
+  );
+};
 
   return (
     <View style={styles.background}>
@@ -40,13 +70,20 @@ const UploadFile = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Display the image if the file is an image */}
-      {fileUri && (fileType === 'jpg' || fileType === 'jpeg' || fileType === 'png') && (
-        <Image
-          source={{ uri: fileUri }}
-          style={{ width: 200, height: 200, marginTop: 20 }}
-        />
-      )}
+      {/* Display selected documents */}
+      <FlatList
+        data={selectedDocuments}
+        keyExtractor={(item, index) => item.uri + index}
+        renderItem={({ item, index }) => (
+          <View style={styles.documentItem}>
+            <Text style={styles.fileName}>Name: {item.name}</Text>
+            <Text>Type: {getFileType(item.name)}</Text>
+            <TouchableOpacity onPress={() => removeDocument(index)}>
+              <Text style={styles.removeButton}>Remove</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
     </View>
   ); 
 }
@@ -65,6 +102,23 @@ const styles = StyleSheet.create({
     },
     button: {
       marginHorizontal: 60,
+    },
+    documentItem: {
+      marginTop: 10,
+      padding: 10,
+      backgroundColor: '#f9f9f9',
+      borderRadius: 5,
+      alignItems: 'center',
+      width: 300,
+    },
+    fileName: {
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    removeButton: {
+      color: 'red',
+      marginTop: 5,
+      fontWeight: 'bold',
     },
   });
 
