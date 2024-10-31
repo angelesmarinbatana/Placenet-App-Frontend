@@ -1,19 +1,22 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { FormEvent } from 'react';
 import { useRouter } from 'expo-router'
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput, Text } from 'react-native';
 import { Button } from 'react-native'
 import React from 'react';
  
 export default function LoginPage() {
   const router = useRouter()
-  const [username, onChangeUser] = React.useState('Username');
-  const [password, onChangePassword] = React.useState('Password');
+  const [username, onChangeUser] = React.useState('');
+  const [password, onChangePassword] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState(''); //error message 
  
   function handleSubmit() {
     //event.preventDefault()
     if (username == "lala" && password == "lala") {    //scuffed "authentication"
+      setErrorMessage(''); //clear previous
       router.push('/main')
+    } else {
+      setErrorMessage('Invalid Credentials! Try Again.');
     }
     /*const formData = new FormData(event.currentTarget)
     const email = formData.get('email')
@@ -41,12 +44,17 @@ export default function LoginPage() {
               style={styles.input}
               onChangeText={onChangeUser}
               value={username}
+              placeholder='Username' //placeholder
             />
             <TextInput
               style={styles.input}
               onChangeText={onChangePassword}
               value={password}
+              placeholder='Password' //placeholder
             />
+
+            {errorMessage ? ( <Text style={styles.errorText}>{errorMessage}</Text> ) : null}
+
             <Button
                 title="Sign In" //button
                 onPress={handleSubmit} //when clicked, go to 'main menu' 
@@ -65,4 +73,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  errorText: {
+    color: 'red',
+    textAlign: 'center'
+  }
 });
