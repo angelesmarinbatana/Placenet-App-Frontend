@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, Button, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 
 /* 
@@ -9,7 +9,11 @@ export default function Index() {
   const router = useRouter();
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Yo, Welcome to Placenet!</Text>
+      <Image
+      source={require('../assets/file.png')}
+      style={styles.logo}
+      />
+      <Text style={styles.text}>Welcome to Placenet</Text>
 
       <Button
       title="Click to Enter" //button
@@ -28,9 +32,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  logo: {
+    width:100,
+    height:100,
+    marginBottom:20,
+  },
   text: {
     color: '#fff',
     fontSize: 25,
+    marginBottom:20,
   },
 
   button:{
