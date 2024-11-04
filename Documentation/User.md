@@ -4,7 +4,7 @@
 
 1. Press "Click to Enter"
 
-![image](images/home.jpeg "Architecture Diagram")
+![image](images/home.jpeg "Architecture Diagram"){: width="50%"}
 
 2. Enter "lala" in both the username and password fields, then press "Log In"
 
@@ -16,7 +16,7 @@ The main menu should look like this:
 
 ### Property Management
 
-1. Press the "Add a new Property" button after signing in
+1. Press the "Add a new Property" button after signing in.
 
 2. If no properties have been added, simply enter the address of the property in the proper fields as shown, then press "Add Property".
 
