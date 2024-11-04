@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Button, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 
 /* 
@@ -15,12 +15,12 @@ export default function Index() {
       />
       <Text style={styles.text}>Welcome to Placenet</Text>
 
-      <Button
-      title="Click to Enter" //button
+      <TouchableOpacity
+      style={styles.button}
       onPress={() => router.push('/sign_in')} //when clicked, go to 'main menu' 
-      color="#E8F3FF" //change 'Click to Enter' color 
-      />
-
+      >
+        <Text style={styles.buttonText}>Click to Enter</Text>
+</TouchableOpacity> 
     </View>
   );
 }
@@ -39,12 +39,21 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#fff',
-    fontSize: 25,
+    fontSize: 27,
     marginBottom:20,
   },
 
-  button:{
-    fontSize:10,
-    color: '#0ff'
+  button: {
+    backgroundColor: '#5a5a5a',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderWidth: 3, 
+    
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
 });

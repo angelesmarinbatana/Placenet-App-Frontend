@@ -1,5 +1,6 @@
-import { View, Button, StyleSheet } from 'react-native'; // need to import on every page -> import things from react native lib
+import { View, Button, StyleSheet, TouchableOpacity, Text } from 'react-native'; // need to import on every page -> import things from react native lib
 import { useRouter } from 'expo-router'; // need to import on every page -> for app routing 
+import React from 'react';
 
 /* 
   'MAIN MENU' PAGE  
@@ -9,32 +10,62 @@ export default function MainMenu() { //make resuable component
   const router = useRouter(); // use router for navigation
 
   return (
-    // make 'view' container + apply styling 
     <View style={styles.container}>
-      <Button 
-        title="Property Management" 
-        onPress={() => router.push('/property')} 
-        color="#1e90ff"
-      />
-      <Button 
-        title="Project Management" 
-        onPress={() => router.push('/project')} 
-        color="#1e90ff"
-      />
-      <Button 
-        title="Document Management" 
-        onPress={() => router.push('/document')} 
-        color="#1e90ff"
-      />
+      {/* Custom Button */}
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => router.push('/property')}
+      >
+        <Text style={styles.buttonText}>Add a new Property</Text>
+      </TouchableOpacity>
+      
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => router.push('/project')}
+      >
+        <Text style={styles.buttonText}>Add a New Project</Text>
+      </TouchableOpacity>
+      
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => router.push('/document')}
+      >
+        <Text style={styles.buttonText}>Add an Invoice/ Receipt</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => router.push('/document')}
+      >
+        <Text style={styles.buttonText}>Profile Summary</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+   
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // container grows dynamically to screen size 
     backgroundColor: '#25292e',
-    alignItems: 'center', //center things horizontal 
-    justifyContent: 'center', //center things vertical
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: '#5a5a5a', //
+    paddingVertical: 12,        // adjust h
+    paddingHorizontal: 20,      // adjust w
+    borderRadius: 15,            
+    marginVertical: 8,          
+    width: '80%',               //adjust  
+    alignItems: 'center',
+    borderWidth: 3,
+
+  },
+  buttonText: {          
+    fontSize: 17,
+    color: '#fff',
   },
 });

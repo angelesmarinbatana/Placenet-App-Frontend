@@ -1,7 +1,6 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router'
-import { StyleSheet, TextInput, Text, } from 'react-native';
-import { Button } from 'react-native'
+import { StyleSheet, TextInput, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
  
 export default function LoginPage() {
@@ -39,7 +38,8 @@ export default function LoginPage() {
  
   return (
     <SafeAreaProvider>
-          <SafeAreaView>
+          <SafeAreaView
+            style={styles.container}>
             <TextInput
               style={styles.input}
               onChangeText={onChangeUser}
@@ -55,20 +55,32 @@ export default function LoginPage() {
 
             {errorMessage ? ( <Text style={styles.errorText}>{errorMessage}</Text> ) : null}
 
-            <Button
-                title="Sign In" //button
-                onPress={handleSubmit} //when clicked, go to 'main menu' 
-                color="#000000" //change 'Click to Enter' color 
-            />
-          </SafeAreaView>
-        </SafeAreaProvider>
+            <TouchableOpacity 
+            style={styles.button} 
+            onPress={handleSubmit}>
+          <Text 
+          style={styles.buttonText}
+          >Log In</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </SafeAreaProvider>
       );
-  
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#25292e',
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+  },
   input: {
+    backgroundColor: '#5a5a5a',
+    borderColor: '#ffffff',
+    borderRadius: 15,
     height: 40,
+    width: '100%',
     margin: 12,
     borderWidth: 1,
     padding: 10,
@@ -76,5 +88,20 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     textAlign: 'center'
-  }
+  },
+  button: {
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    height: 40,
+    width: '30%',
+    margin: 12,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
+  buttonText: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
 });
