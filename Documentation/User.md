@@ -22,7 +22,7 @@ The main menu should look like this:
 
 <img src="images/add_property.jpeg" alt="Home Page" width="200">
 
-3. To edit a property, press the edit button next to the property and change the info as needed.
+3. To edit a property, press the edit button next to the property and change the info as needed, then press "Update Property".
 
 4. To delete a property, press the red button next to the address.
 
