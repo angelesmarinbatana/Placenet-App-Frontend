@@ -16,7 +16,7 @@ The main menu should look like this:
 
 ### Property Management
 
-1. Press the "Add a new Property" button after signing in.
+1. Press the "Add a new Property" button after signing in
 
 2. If no properties have been added, simply enter the address of the property in the proper fields as shown, then press "Add Property".
 
