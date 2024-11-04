@@ -1,9 +1,7 @@
 import { View, Button, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as DocumentPicker from "expo-document-picker"
-import api from './api/api';
-//import lib for documents 
-
+import api from '../API/api';
 /* 
   'DOCUMENT'PAGE  
 */
@@ -34,6 +32,72 @@ const UploadFile = () => {
       console.log("Error picking documents:", error)
     }
   };
+
+
+
+
+  //POST
+  const uploadDocuments = async () => {
+    try {
+      for (const document of selectedDocuments) {
+        const formData = new FormData();
+        formData.append('file', {
+          uri: document.uri,
+          name: document.name,
+          type: document.mimeType,
+        });
+        const response = await api.post('/documents', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        console.log("Document uploaded:", response.data);
+      }
+      // Clear selected documents after upload
+      setSelectedDocuments([]);
+    } catch (error) {
+      console.error("Error uploading documents:", error);
+    }
+  }; 
+  
+  
+  //DELETE 
+  const deleteDocument = async (index: number) => {
+    const document = selectedDocuments[index];
+    try {
+      // Assuming the backend needs a document ID or some identifier to delete
+      const documentId = document.id;  // Make sure each document has an 'id' assigned when uploaded
+      await api.delete(`/documents/${documentId}`);
+      console.log("Document deleted:", documentId);
+
+      // Remove the document from the local state
+      setSelectedDocuments((prevSelectedDocuments) =>
+        prevSelectedDocuments.filter((_, i) => i !== index)
+      );
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
    // Additional code snippet to get the document type 
 const getFileType = (fileName: string): string => {
