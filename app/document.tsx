@@ -1,7 +1,7 @@
 import { View, Button, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import * as DocumentPicker from "expo-document-picker"
-import { uploadDocument } from './API/api';
+import api from './api/api';
 //import lib for documents 
 
 /* 
@@ -23,27 +23,6 @@ const UploadFile = () => {
             ...prevSelectedDocuments,
             ...successResult.assets,
           ]);
-
-
-
-
-
-          //uploading doc to backedn 
-          successResult.assets.forEach(async(doc) =>{
-            const formData = new FormData();
-            formData.append('file', {
-              uri: doc.uri,
-              name: doc.name,
-              type: doc.mimeType || 'application/pdf'
-            });
-
-          })
-
-
-
-
-
-
 
         } else {
           console.log("Maximim of 5 documents allowed.");
