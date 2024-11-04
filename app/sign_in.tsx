@@ -2,21 +2,35 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router'
 import { StyleSheet, TextInput, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
+import api from '../API/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
  
 export default function LoginPage() {
   const router = useRouter()
   const [username, onChangeUser] = React.useState('');
   const [password, onChangePassword] = React.useState('');
-  const [errorMessage, setErrorMessage] = React.useState(''); //error message 
+  const [errorMessage, setErrorMessage] = React.useState('');
  
-  function handleSubmit() {
+  async function handleSubmit() {
+    console.log('Submitting:', username, password); // Check credentials before sending
+    try {
+      const response = await api.post('/users/authenticate', { username, password });
+    const userId = response.data.userId;
+    await AsyncStorage.setItem('userId', userId.toString()); // Save userId in AsyncStorage
+    setErrorMessage('');
+    router.push('/main'); // Navigate to main page
+  } catch (error) {
+    setErrorMessage('Invalid Credentials! Try Again.');
+  }
+}
+  
     //event.preventDefault()
-    if (username == "lala" && password == "lala") {    //scuffed "authentication"
-      setErrorMessage(''); //clear previous
-      router.push('/main')
-    } else {
-      setErrorMessage('Invalid Credentials! Try Again.');
-    }
+    // if (username == "lala" && password == "lala") {    //scuffed "authentication"
+    //   setErrorMessage(''); //clear previous
+    //   router.push('/main')
+    // } else {
+    //   setErrorMessage('Invalid Credentials! Try Again.');
+    // }
     /*const formData = new FormData(event.currentTarget)
     const email = formData.get('email')
     const password = formData.get('password')
@@ -34,7 +48,7 @@ export default function LoginPage() {
     }*/
 
       //TODO: Actual auth implementation, commented code is for that exact purpose, pls dont touch <3
-  }
+  
  
   return (
     <SafeAreaProvider>
