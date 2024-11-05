@@ -2,6 +2,8 @@
 
 PGAdmin is also highly recommended for those not familiar with PostgreSQL
 
+## Deploying
+
 1. Clone the frontend using: 
 
    > git clone https://github.com/angelesmarin/Placenet-App-Frontend.git
@@ -64,6 +66,8 @@ PGAdmin is also highly recommended for those not familiar with PostgreSQL
 
     > PORT=3000
 
+    **THIS FILE IS REQUIRED OR THE PROJECT WILL NOT FUNCTION**
+
 5. Connect to the database with:
 
     > psql -U postgres -d placenet
@@ -78,6 +82,8 @@ PGAdmin is also highly recommended for those not familiar with PostgreSQL
 
     > npx expo start
 
+**THE DATABASE, BACKEND, AND FRONTEND MUST ALL BE OPERATIONAL**
+
 8. Use SQL to insert a user with username and password columns specified, or use Insomnia to do so with a POST request using http://localhost:3000/api/users and some json as the body that looks like this:
 
     >  {"username": "usernamehere","password_hash": "passwordhere"}
@@ -85,3 +91,13 @@ PGAdmin is also highly recommended for those not familiar with PostgreSQL
 9. Navigate to the [api.js script](..\API\api.js) and change the IP in the baseURL property to your own IP (keep it otherwise the same).
 
 10. Upon opening the frontend, you should now be able to log in with the parameters specified in your request from step 8 and use the app.
+
+11. To stop the processes, simply press Ctrl/Cmd + C in all the command windows, or just close the windows.
+
+## Potential Errors
+
+If you find that you cannot log in to the app using the user profile created in step 8, do the following:
+
+1. Double check your spelling. The username and password is case sensitive.
+2. Ensure the password column in the database is called "password_hash" and not just "password".
+3. Double check that the IP in the [api.js script](..\API\api.js) is your own IP.
