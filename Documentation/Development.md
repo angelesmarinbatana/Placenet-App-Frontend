@@ -1,8 +1,10 @@
 # Running Placenet App
-This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
+This document will be a step by step manual on how to set up running the Placenet App on your local environment. 
 
 Before getting started, make sure you have a code editor for running (we use Visual Studio Code)
 * VS Code: https://code.visualstudio.com/download
+
+For backend setup, please visit the [backend documentation](https://github.com/angelesmarin/Placenet-App-Backend/blob/development/README.md).
 
 ## Installations
 1. **Node JS**
@@ -20,6 +22,9 @@ Before getting started, make sure you have a code editor for running (we use Vis
 4. **Watchman**
     * Install Watchman: https://facebook.github.io/watchman/docs/install
 We installed Watchman to help with app file handling, as the operating system might limit files that can be watched by a single app.
+
+5. **Axios**
+    * Install Axios https://axios-http.com/docs/intro
 
 ## Getting the Placenet App 
 From Github: 
