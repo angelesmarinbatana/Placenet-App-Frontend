@@ -2,6 +2,7 @@ import { View, Button, Text, StyleSheet, TouchableOpacity, FlatList } from 'reac
 import React, { useState, useEffect } from 'react';
 import * as DocumentPicker from "expo-document-picker"
 import api from '../API/api';
+
 /* 
   'DOCUMENT'PAGE  
 */
@@ -76,30 +77,7 @@ const UploadFile = () => {
       console.error("Error deleting document:", error);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   // Additional code snippet to get the document type 
+   //get doc type
 const getFileType = (fileName: string): string => {
   const extension = fileName.split('.').pop()?.toLowerCase();
   switch (extension) {
@@ -116,7 +94,7 @@ const getFileType = (fileName: string): string => {
   }
 };
 
-// Remove a document from the array 
+//remove from the array 
 const removeDocument = (index: number) => {
   setSelectedDocuments((prevSelectedDocuments) =>
     prevSelectedDocuments.filter((_, i) => i !== index)
