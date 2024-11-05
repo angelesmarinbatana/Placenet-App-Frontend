@@ -30,6 +30,10 @@ Before getting started, make sure you have a code editor for running (we use Vis
     * Install Watchman: https://facebook.github.io/watchman/docs/install
 We installed Watchman to help with app file handling, as the operating system might limit files that can be watched by a single app.
 
+5. **Axios**
+    * Install Axios: https://axios-http.com/docs/intro
+We installed Axios to help with making HTTP requests to our backend server.
+
 ## Getting the Placenet App 
 From Github: 
 1. Clone the Repository

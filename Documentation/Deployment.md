@@ -88,7 +88,7 @@ PGAdmin is also highly recommended for those not familiar with PostgreSQL
 
     >  {"username": "usernamehere","password_hash": "passwordhere"}
 
-9. Navigate to the [api.js script](..\API\api.js) and change the IP in the baseURL property to your own IP (keep it otherwise the same).
+9. Navigate to the [api.js script](..\API\api.js) and change the IP in the baseURL property to your own IP.
 
 10. Upon opening the frontend, you should now be able to log in with the parameters specified in your request from step 8 and use the app.
 
