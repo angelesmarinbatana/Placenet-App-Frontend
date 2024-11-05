@@ -6,7 +6,6 @@ This our front end repository for Placenet, our React Native mobile application.
    * The **development** branch is a result of merging feature branching branches
    * Our features are encapulated into branches for modularity, they are labeled:
      * FB--[feature branch name]: for **front end** features
-     * BB--[feature branch name]: for **back end** features
 
     
   **Take a look at our backend!: [backend](https://github.com/angelesmarin/Placenet-App-Backend/tree/development)**
