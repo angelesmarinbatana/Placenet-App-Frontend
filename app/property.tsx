@@ -16,10 +16,9 @@ const PropertyManagement: React.FC = () => {
     const [properties, setProperties] = useState<Property[]>([]); 
     const [editingIndex, setEditingIndex] = useState<number | null>(null); 
 
-    
     const fetchProperties = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId'); //userId from asyncstorage
+        const userId = await AsyncStorage.getItem('userId');
         if (userId) {
           const response = await api.get(`/properties?user_id=${userId}`);
           setProperties(response.data);
@@ -30,28 +29,24 @@ const PropertyManagement: React.FC = () => {
       }
     };
 
-    // get
     useEffect(() => {
         fetchProperties();
     }, []);
 
-    //add new
     const handleAddProperty = async () => {
         if (street.trim() && city.trim() && state.trim() && zip.trim()) {
             const userId = await AsyncStorage.getItem('userId');
             const fullAddress = `${street}, ${city}, ${state} ${zip}`;
 
             if (editingIndex !== null) {
-                //edit in backedn
                 await updateProperty(editingIndex, fullAddress);
             } else {
-                //add new
                 try {
                     const response = await api.post('/properties', {
                         user_id: userId,
                         name: fullAddress,
                     });
-                    setProperties([...properties, response.data]); //add to list
+                    setProperties([...properties, response.data]);
                     Alert.alert('Successful!', 'Property has been added!');
                 } catch (error) {
                     Alert.alert('Error!', 'Failed to add property.');
@@ -59,48 +54,55 @@ const PropertyManagement: React.FC = () => {
                 }
             }
 
-            //clear fields
             setStreet('');
             setCity('');
             setState('');
             setZip('');
-            setEditingIndex(null); //clear editing
+            setEditingIndex(null);
         } else {
             Alert.alert('Error!', 'All address fields must be filled out!');
         }
     };
 
-    //update
     const updateProperty = async (propertyId: number, newAddress: string) => {
         try {
             await api.put(`/properties/${propertyId}`, { name: newAddress });
             Alert.alert('Successful!', 'Property has been updated!');
-            fetchProperties(); //refresh list for updated property
+            fetchProperties();
         } catch (error) {
             Alert.alert('Error!', 'Failed to update property.');
             console.error('Error updating property:', error);
         }
     };
 
-    //edit
     const handleEditProperty = (property: Property) => {
         const [street, city, state, zip] = property.name.split(', ');
         setStreet(street);
         setCity(city);
         setState(state);
         setZip(zip);
-        setEditingIndex(property.property_id); //track
+        setEditingIndex(property.property_id);
     };
 
-    //delete
     const handleDeleteProperty = async (propertyId: number) => {
         try {
-            await api.delete(`/properties/${propertyId}`); //send request to backend 
+            await api.delete(`/properties/${propertyId}`);
             Alert.alert('Deleted!', 'Property has been removed.');
-            fetchProperties(); //refresh list 
+            fetchProperties();
         } catch (error) {
             Alert.alert('Error!', 'Failed to delete property.');
             console.error('Error deleting property:', error);
+        }
+    };
+
+    // New function to select a property for project management
+    const handleSelectProperty = async (propertyId: number) => {
+        try {
+            await AsyncStorage.setItem('selectedPropertyId', propertyId.toString());
+            Alert.alert('Selected!', 'Property selected for project management.');
+        } catch (error) {
+            Alert.alert('Error!', 'Failed to select property.');
+            console.error('Error selecting property:', error);
         }
     };
 
@@ -165,6 +167,12 @@ const PropertyManagement: React.FC = () => {
                                     >
                                         <Text style={styles.buttonText}>Delete</Text>
                                     </TouchableOpacity>
+                                    <TouchableOpacity 
+                                        onPress={() => handleSelectProperty(item.property_id)} 
+                                        style={styles.selectButton}
+                                    >
+                                        <Text style={styles.buttonText}>Select Property</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         )}
@@ -174,6 +182,7 @@ const PropertyManagement: React.FC = () => {
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {
@@ -208,31 +217,38 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     propertyItemContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'flex-start',  // Aligns contents to the start
         borderBottomColor: '#ccc',
         borderBottomWidth: 1,
         paddingVertical: 10,
+        marginBottom: 10,          // Adds space between properties
     },
     propertyItem: {
         fontSize: 16,
+        marginBottom: 8,           // Adds space between the name and buttons
     },
     buttonContainer: {
-        flexDirection: 'row',
+        flexDirection: 'row',       // Aligns buttons horizontally
+        justifyContent: 'flex-start', // Aligns buttons to the left
+        gap: 8,                     // Adds space between buttons
     },
     editButton: {
         backgroundColor: '#4CAF50',
         paddingVertical: 5,
         paddingHorizontal: 15,
         borderRadius: 5,
-        marginRight: 10,
     },
     deleteButton: {
         backgroundColor: '#f44336',
         paddingVertical: 5,
         paddingHorizontal: 15,
         borderRadius: 5,
+    },
+    selectButton: { 
+        backgroundColor: '#1E90FF', 
+        paddingVertical: 5, 
+        paddingHorizontal: 15, 
+        borderRadius: 5, 
     },
     buttonText: {
         color: '#fff',
