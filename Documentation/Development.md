@@ -1,5 +1,14 @@
-# Running Placenet App
-This document will be a step by step manual on how to set up running the Placenet App on your local environment. 
+# Welcome To Placenet App!
+
+## Information on our Repository
+This is the default branch for Placenet, our React Native mobile application. 
+   * Our **main** branch is protected as operational code, and there are no direct commits.
+   * The **development** branch is a result of merging feature branching branches
+   * Our features are encapulated into branches for modularity, they are labeled:
+     * FB--[feature branch name]: for **front end** features
+
+## Running Placenet App
+This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
 
 Before getting started, make sure you have a code editor for running (we use Visual Studio Code)
 * VS Code: https://code.visualstudio.com/download
