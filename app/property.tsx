@@ -1,6 +1,6 @@
-import { View, TextInput, Button, StyleSheet, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import api from '../API/api'; // Assuming this is the Axios instance configured with the base URL
+import { View, TextInput, Button, StyleSheet, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
+import api from '../API/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Property {
@@ -9,17 +9,17 @@ interface Property {
 }
 
 const PropertyManagement: React.FC = () => {
-    const [street, setStreet] = useState<string>(''); // State for street
-    const [city, setCity] = useState<string>(''); // State for city
-    const [state, setState] = useState<string>(''); // State for state
-    const [zip, setZip] = useState<string>(''); // State for zip code
-    const [properties, setProperties] = useState<Property[]>([]); // State for storing the list of properties
-    const [editingIndex, setEditingIndex] = useState<number | null>(null); // State to track which property is being edited
+    const [street, setStreet] = useState<string>(''); 
+    const [city, setCity] = useState<string>(''); 
+    const [state, setState] = useState<string>(''); 
+    const [zip, setZip] = useState<string>(''); 
+    const [properties, setProperties] = useState<Property[]>([]); 
+    const [editingIndex, setEditingIndex] = useState<number | null>(null); 
 
-    // Function to fetch properties for the logged-in user
+    
     const fetchProperties = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId'); // Retrieve userId from AsyncStorage
+        const userId = await AsyncStorage.getItem('userId'); //userId from asyncstorage
         if (userId) {
           const response = await api.get(`/properties?user_id=${userId}`);
           setProperties(response.data);
@@ -30,32 +30,28 @@ const PropertyManagement: React.FC = () => {
       }
     };
 
-    // Fetch properties on component mount
+    // get
     useEffect(() => {
         fetchProperties();
     }, []);
 
-    // Function to handle adding a new property
+    //add new
     const handleAddProperty = async () => {
         if (street.trim() && city.trim() && state.trim() && zip.trim()) {
-            const userId = localStorage.getItem('userID');
+            const userId = await AsyncStorage.getItem('userId');
             const fullAddress = `${street}, ${city}, ${state} ${zip}`;
 
             if (editingIndex !== null) {
-                // Edit existing property (for local state, assuming API call if editing in the backend)
-                const updatedProperties = [...properties];
-                updatedProperties[editingIndex] = { ...updatedProperties[editingIndex], name: fullAddress };
-                setProperties(updatedProperties);
-                Alert.alert('Successful!', 'Property has been updated!');
-                setEditingIndex(null); // Reset editing state
+                //edit in backedn
+                await updateProperty(editingIndex, fullAddress);
             } else {
-                // Add new property
+                //add new
                 try {
                     const response = await api.post('/properties', {
                         user_id: userId,
                         name: fullAddress,
                     });
-                    setProperties([...properties, response.data]); // Append new property to list
+                    setProperties([...properties, response.data]); //add to list
                     Alert.alert('Successful!', 'Property has been added!');
                 } catch (error) {
                     Alert.alert('Error!', 'Failed to add property.');
@@ -63,35 +59,54 @@ const PropertyManagement: React.FC = () => {
                 }
             }
 
-            // Clear input fields
+            //clear fields
             setStreet('');
             setCity('');
             setState('');
             setZip('');
+            setEditingIndex(null); //clear editing
         } else {
             Alert.alert('Error!', 'All address fields must be filled out!');
         }
     };
 
-    // Function to handle editing a property
-    const handleEditProperty = (index: number) => {
-        const [street, city, state, zip] = properties[index].name.split(/, | /);
+    //update
+    const updateProperty = async (propertyId: number, newAddress: string) => {
+        try {
+            await api.put(`/properties/${propertyId}`, { name: newAddress });
+            Alert.alert('Successful!', 'Property has been updated!');
+            fetchProperties(); //refresh list for updated property
+        } catch (error) {
+            Alert.alert('Error!', 'Failed to update property.');
+            console.error('Error updating property:', error);
+        }
+    };
+
+    //edit
+    const handleEditProperty = (property: Property) => {
+        const [street, city, state, zip] = property.name.split(', ');
         setStreet(street);
         setCity(city);
         setState(state);
         setZip(zip);
-        setEditingIndex(index);
+        setEditingIndex(property.property_id); //track
     };
 
-    // Function to handle deleting a property
-    const handleDeleteProperty = (index: number) => {
-        const updatedProperties = properties.filter((_, i) => i !== index);
-        setProperties(updatedProperties);
-        Alert.alert('Deleted!', 'Property has been removed.');
+    //delete
+    const handleDeleteProperty = async (propertyId: number) => {
+        try {
+            await api.delete(`/properties/${propertyId}`); //send request to backend 
+            Alert.alert('Deleted!', 'Property has been removed.');
+            fetchProperties(); //refresh list 
+        } catch (error) {
+            Alert.alert('Error!', 'Failed to delete property.');
+            console.error('Error deleting property:', error);
+        }
     };
 
     return (
         <View style={styles.container}>
+            {/* Input fields for adding/editing properties */}
             <Text style={styles.label}>Street:</Text>
             <TextInput
                 style={styles.input}
@@ -127,20 +142,27 @@ const PropertyManagement: React.FC = () => {
                 onPress={handleAddProperty}
             />
 
+            {/* Display the list of properties */}
             {properties.length > 0 && (
                 <View style={styles.listContainer}>
                     <Text style={styles.listTitle}>Properties Added:</Text>
                     <FlatList
                         data={properties}
                         keyExtractor={(item) => item.property_id.toString()}
-                        renderItem={({ item, index }) => (
+                        renderItem={({ item }) => (
                             <View style={styles.propertyItemContainer}>
                                 <Text style={styles.propertyItem}>{item.name}</Text>
                                 <View style={styles.buttonContainer}>
-                                    <TouchableOpacity onPress={() => handleEditProperty(index)} style={styles.editButton}>
+                                    <TouchableOpacity 
+                                        onPress={() => handleEditProperty(item)} 
+                                        style={styles.editButton}
+                                    >
                                         <Text style={styles.buttonText}>Edit</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => handleDeleteProperty(index)} style={styles.deleteButton}>
+                                    <TouchableOpacity 
+                                        onPress={() => handleDeleteProperty(item.property_id)} 
+                                        style={styles.deleteButton}
+                                    >
                                         <Text style={styles.buttonText}>Delete</Text>
                                     </TouchableOpacity>
                                 </View>
