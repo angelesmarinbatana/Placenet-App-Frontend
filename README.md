@@ -6,11 +6,9 @@ This our front end repository for Placenet, our React Native mobile application.
    * The **development** branch is a result of merging feature branching branches
    * Our features are encapulated into branches for modularity, they are labeled:
      * FB--[feature branch name]: for **front end** features
-     * BB--[feature branch name]: for **back end** features
-
     
-  **Take a look at our backend!: [backend](https://github.com/angelesmarin/Placenet-App-Backend/tree/development)**
-
+## Backend Source Code
+Our backend source code can be found in our repository: https://github.com/angelesmarin/Placenet-App-Backend/tree/development 
 
 ## Running Placenet App
 This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
@@ -34,6 +32,10 @@ Before getting started, make sure you have a code editor for running (we use Vis
 4. **Watchman**
     * Install Watchman: https://facebook.github.io/watchman/docs/install
 We installed Watchman to help with app file handling, as the operating system might limit files that can be watched by a single app.
+
+5. **Axios**
+    * Install Axios: https://axios-http.com/docs/intro
+We intalled Axios to mak HTTP requsts to our backend sever
 
 ## Getting the Placenet App 
 From Github: 

@@ -77,7 +77,7 @@ const UploadFile = () => {
       console.error("Error deleting document:", error);
     }
   };
-   //get doc type
+
 const getFileType = (fileName: string): string => {
   const extension = fileName.split('.').pop()?.toLowerCase();
   switch (extension) {
