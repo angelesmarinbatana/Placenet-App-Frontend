@@ -6,7 +6,7 @@
 
 <img src="images/home.jpeg" alt="Home Page" width="200">
 
-2. Enter "lala" in both the username and password fields, then press "Log In"
+2. Enter your username and password, then press "Log In"
 
 <img src="images/sign_in.jpeg" alt="Home Page" width="200">
 
