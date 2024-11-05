@@ -60,4 +60,7 @@ In your code editor:
 ### Optional: Running App on Web Browser 
    *  In code editor terminal, select W to launch the app on your local web browser.
 
+## Testing the App
+  * Log into the app using "lala" in both username and password fields and play around with the features. You should be able to add, edit, and delete properties, projects, and uploaded documents. However, the data won't persist if the app isn't connected to the backend, more details can be found in the [Deployment.md](Deployment.md) file.
+
 ### For more information, visit Expo website: https://expo.dev/ 
