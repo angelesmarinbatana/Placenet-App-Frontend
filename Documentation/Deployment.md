@@ -101,3 +101,5 @@ If you find that you cannot log in to the app using the user profile created in 
 1. Double check your spelling. The username and password is case sensitive.
 2. Ensure the password column in the database is called "password_hash" and not just "password".
 3. Double check that the IP in the [api.js script](..\API\api.js) is your own IP.
+
+Insomnia can also be used to ensure the database itself is operational.
