@@ -20,7 +20,7 @@ const PropertyManagement: React.FC = () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
         if (userId) {
-          const response = await api.get(`/properties?user_id=${userId}`);
+          const response = await api.get(`/properties?user_id=${userId}`); //userId from asyncstorage
           setProperties(response.data);
         }
       } catch (error) {
@@ -28,61 +28,64 @@ const PropertyManagement: React.FC = () => {
         console.error('Error fetching properties:', error);
       }
     };
-
+    //get
     useEffect(() => {
         fetchProperties();
     }, []);
-
+    //add new
     const handleAddProperty = async () => {
         if (street.trim() && city.trim() && state.trim() && zip.trim()) {
-            const userId = await AsyncStorage.getItem('userId');
+            const userId = await AsyncStorage.getItem('userId'); 
             const fullAddress = `${street}, ${city}, ${state} ${zip}`;
 
             if (editingIndex !== null) {
+                //edit in backend 
                 await updateProperty(editingIndex, fullAddress);
             } else {
+                //add new 
                 try {
                     const response = await api.post('/properties', {
                         user_id: userId,
                         name: fullAddress,
                     });
-                    setProperties([...properties, response.data]);
+                    setProperties([...properties, response.data]); //add to list 
                     Alert.alert('Successful!', 'Property has been added!');
                 } catch (error) {
                     Alert.alert('Error!', 'Failed to add property.');
                     console.error('Error adding property:', error);
                 }
             }
-
+            //clear fields
             setStreet('');
             setCity('');
             setState('');
             setZip('');
-            setEditingIndex(null);
+            setEditingIndex(null); //clear editing 
         } else {
             Alert.alert('Error!', 'All address fields must be filled out!');
         }
     };
-
+    //update 
     const updateProperty = async (propertyId: number, newAddress: string) => {
         try {
             await api.put(`/properties/${propertyId}`, { name: newAddress });
             Alert.alert('Successful!', 'Property has been updated!');
-            fetchProperties();
+            fetchProperties(); //refresh
         } catch (error) {
             Alert.alert('Error!', 'Failed to update property.');
             console.error('Error updating property:', error);
         }
     };
-
+    //edit
     const handleEditProperty = (property: Property) => {
         const [street, city, state, zip] = property.name.split(', ');
         setStreet(street);
         setCity(city);
         setState(state);
         setZip(zip);
-        setEditingIndex(property.property_id);
+        setEditingIndex(property.property_id); //track
     };
+    //delete
 
     const handleDeleteProperty = async (propertyId: number) => {
         try {
@@ -95,7 +98,7 @@ const PropertyManagement: React.FC = () => {
         }
     };
 
-    // New function to select a property for project management
+    // NEW: select property for project management
     const handleSelectProperty = async (propertyId: number) => {
         try {
             await AsyncStorage.setItem('selectedPropertyId', propertyId.toString());
@@ -217,20 +220,20 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     propertyItemContainer: {
-        alignItems: 'flex-start',  // Aligns contents to the start
+        alignItems: 'flex-start',  
         borderBottomColor: '#ccc',
         borderBottomWidth: 1,
         paddingVertical: 10,
-        marginBottom: 10,          // Adds space between properties
+        marginBottom: 10,         
     },
     propertyItem: {
         fontSize: 16,
-        marginBottom: 8,           // Adds space between the name and buttons
+        marginBottom: 8,           
     },
     buttonContainer: {
-        flexDirection: 'row',       // Aligns buttons horizontally
-        justifyContent: 'flex-start', // Aligns buttons to the left
-        gap: 8,                     // Adds space between buttons
+        flexDirection: 'row',       
+        justifyContent: 'flex-start', 
+        gap: 8,                     
     },
     editButton: {
         backgroundColor: '#4CAF50',
