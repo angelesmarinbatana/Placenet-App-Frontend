@@ -2,7 +2,7 @@
 
 ## Information on our Repository
 This our front end repository for Placenet, our React Native mobile application. 
-   * Our **main** branch is protected as operational code, and there are no direct commits.
+   * Our **production** branch is protected as operational code, and there are no direct commits.
    * The **development** branch is a result of merging feature branching branches
    * Our features are encapulated into branches for modularity, they are labeled:
      * FB--[feature branch name]: for **front end** features
