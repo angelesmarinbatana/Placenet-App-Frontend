@@ -1,12 +1,12 @@
 FROM node:20
 
-WORKDIR /usr/src/placenet-app
+WORKDIR /usr/src/app/placenet-app
 
 COPY package*.json ./
 
-RUN npm install && npx install-expo-modules@latest && npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar && npx expo install react-native-web react-dom && npm install axios
+RUN npm install && npm install axios
 
-EXPOSE 3002
+EXPOSE 8081
 
 CMD ["npx", "expo", "start"]
 
