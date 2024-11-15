@@ -36,7 +36,7 @@ export default function LoginPage() {
           style={styles.logo}
         />
         <Text style={styles.titleText}>Welcome to Placenet!</Text>
-        <Text style={styles.subtitleText}>For property and community care.</Text>
+        <Text style={styles.subtitleText}>For property and community care</Text>
 
         {/* Username Input */}
         <TextInput
