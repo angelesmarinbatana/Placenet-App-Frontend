@@ -7,6 +7,10 @@ This is the default branch for Placenet, our React Native mobile application.
    * Our features are encapulated into branches for modularity, they are labeled:
      * FB--[feature branch name]: for **front end** features
 
+## Replicating via Docker (recommended)
+
+Visit the [docker repository](https://github.com/angelesmarin/PlacenetDocker) for full docker instructions.
+
 ## Running Placenet App
 This document will be a step by step manual on how to setp up running the Placenet App on your local envoronment. 
 
