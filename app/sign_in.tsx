@@ -2,31 +2,30 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { StyleSheet, TextInput, Text, TouchableOpacity, View, Image } from 'react-native';
 import React from 'react';
-import api from '../API/api';  // Import your API
+import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
 
-export default function SignUpPage() {
+
+/* 
+NEW: index main entry screen
+*/
+
+export default function LoginPage() {
   const router = useRouter();
-  const [username, onChangeUsername] = React.useState('');
-  const [email, onChangeEmail] = React.useState('');
+  const [username, onChangeUser] = React.useState('');
   const [password, onChangePassword] = React.useState('');
-  const [confirmPassword, onChangeConfirmPassword] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
 
-  async function handleSignUp() {
-    if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match!');
-      return;
-    }
-
+  async function handleSubmit() {
+    console.log('Submitting:', username, password);
     try {
-      const response = await api.post('/users/register', { username, email, password });
+      const response = await api.post('/users/authenticate', { username, password });
       const token = response.data.token;
       await SecureStore.setItem('userToken', token);
       setErrorMessage('');
-      router.push('/main'); // Navigate to main screen after sign up
+      router.push('/main'); //go to main
     } catch (error) {
-      setErrorMessage('Registration failed! Please try again.');
+      setErrorMessage('Invalid Credentials! Try Again.');
     }
   }
 
@@ -34,29 +33,19 @@ export default function SignUpPage() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Image
-          source={require('../assets/placenet.png')} // Update path if necessary
+          source={require('../assets/placenet.png')} 
           style={styles.logo}
         />
-        <Text style={styles.titleText}>Create Your Account</Text>
+        <Text style={styles.titleText}>Welcome Back!</Text>
+        <Text style={styles.subtitleText}>Sign in your account</Text>
 
         {/* Username Input */}
         <TextInput
           style={styles.input}
-          onChangeText={onChangeUsername}
+          onChangeText={onChangeUser}
           value={username}
           placeholder="Username"
           placeholderTextColor="#A9A9A9"
-        />
-
-        {/* Email Input */}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeEmail}
-          value={email}
-          placeholder="Email"
-          placeholderTextColor="#A9A9A9"
-          keyboardType="email-address"
-          autoCapitalize="none"
         />
 
         {/* Password Input */}
@@ -69,32 +58,22 @@ export default function SignUpPage() {
           secureTextEntry
         />
 
-        {/* Confirm Password Input */}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeConfirmPassword}
-          value={confirmPassword}
-          placeholder="Confirm Password"
-          placeholderTextColor="#A9A9A9"
-          secureTextEntry
-        />
-
         {/* Error Message */}
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-        {/* Sign Up Button */}
-        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+        {/* Log In Button */}
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
 
-        {/* Link to Sign In */}
-        <View style={styles.signinContainer}>
-          <Text style={styles.signinText}>Already have an account?</Text>
+        {/* Sign Up Link */}
+        <View style={styles.signupContainer}>
+          <Text style={styles.signupText}>Don't have an account?</Text>
           <Text
-            style={styles.signinLink}
-            onPress={() => router.push('/sign_in')}
+            style={styles.signupLink}
+            onPress={() => router.push('/sign_up')} 
           >
-            Sign In
+            Sign Up
           </Text>
         </View>
       </SafeAreaView>
@@ -104,10 +83,10 @@ export default function SignUpPage() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
+    backgroundColor:'#ffffff',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent:'center',
+    alignItems:'center',
     padding: 15,
   },
   logo: {
@@ -119,7 +98,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 20,
+    marginBottom: 5,
+  },
+  subtitleText: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 30,
   },
   input: {
     backgroundColor: '#F0F0F0',
@@ -151,17 +135,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
   },
-  signinContainer: {
+  signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
   },
-  signinText: {
+  signupText: {
     color: '#A9A9A9',
     fontSize: 14,
   },
-  signinLink: {
+  signupLink: {
     color: '#0000FF',
     fontSize: 14,
     marginLeft: 5,
