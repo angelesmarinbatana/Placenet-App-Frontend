@@ -17,10 +17,16 @@ export default function LoginPage() {
   async function handleSubmit() {
     console.log('Submitting:', username, password);
     try {
+      //send request to enpoint 
       const response = await api.post('/auth/login', { username, password });
       const token = response.data.token;
+      const userId = response.data.userId;
+
+      //save token & id 
       await SecureStore.setItemAsync('userToken', token);
-      setErrorMessage('');
+      await SecureStore.setItemAsync('userId', String(userId));
+
+      setErrorMessage('');//clear prev mgs
       router.push('/main'); //go to main
     } catch (error) {
       setErrorMessage('Invalid Credentials! Try Again.');
