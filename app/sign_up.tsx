@@ -1,18 +1,18 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, TextInput, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
 import React from 'react';
-import api from '../API/api';  // Import your API
-import * as SecureStore from 'expo-secure-store';
+import api from '../API/api';
 
 export default function SignUpPage() {
   const router = useRouter();
   const [username, onChangeUsername] = React.useState('');
-  const [email, onChangeEmail] = React.useState('');
   const [password, onChangePassword] = React.useState('');
   const [confirmPassword, onChangeConfirmPassword] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
 
+
+  //handle sign in 
   async function handleSignUp() {
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match!');
@@ -20,11 +20,15 @@ export default function SignUpPage() {
     }
 
     try {
-      const response = await api.post('/users/register', { username, email, password });
-      const token = response.data.token;
-      await SecureStore.setItem('userToken', token);
-      setErrorMessage('');
-      router.push('/main'); // Navigate to main screen after sign up
+      const response = await api.post('/auth/register', { username, password });
+      
+      if (response.status === 201) {
+        //redirect to sign in + success message 
+        setErrorMessage('');
+        Alert.alert('Success', 'User created successfully! Please log in.', [
+          { text: 'OK', onPress: () => router.push('/sign_in') },
+        ]);
+      }
     } catch (error) {
       setErrorMessage('Registration failed! Please try again.');
     }
@@ -34,7 +38,7 @@ export default function SignUpPage() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Image
-          source={require('../assets/placenet.png')} // Update path if necessary
+          source={require('../assets/placenet.png')}
           style={styles.logo}
         />
         <Text style={styles.titleText}>Create Your Account</Text>
@@ -46,17 +50,6 @@ export default function SignUpPage() {
           value={username}
           placeholder="Username"
           placeholderTextColor="#A9A9A9"
-        />
-
-        {/* Email Input */}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeEmail}
-          value={email}
-          placeholder="Email"
-          placeholderTextColor="#A9A9A9"
-          keyboardType="email-address"
-          autoCapitalize="none"
         />
 
         {/* Password Input */}
@@ -101,6 +94,7 @@ export default function SignUpPage() {
     </SafeAreaProvider>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.Placenet"
+      "package": "com.anonymous.Placenet",
+      "newArchEnabled": true
     },
     "web": {
       "bundler": "metro",
