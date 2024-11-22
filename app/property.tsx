@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, 
-    TextInput, 
-    Button, 
-    StyleSheet, 
-    Alert, 
-    FlatList, 
-    Text, 
-    TouchableOpacity 
-} from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
 import api from '../API/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Property {
   property_id: number;
@@ -24,7 +15,7 @@ const PropertyManagement: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]); 
   const [editingIndex, setEditingIndex] = useState<number | null>(null); 
 
-  //get all props
+  //all props
   const fetchProperties = async () => {
     try {
       const response = await api.get('/properties');
@@ -48,7 +39,7 @@ const PropertyManagement: React.FC = () => {
         //update
         await updateProperty(editingIndex, fullAddress);
       } else {
-        //add
+        // add new
         try {
           const response = await api.post('/properties', {
             name: fullAddress,
@@ -61,12 +52,12 @@ const PropertyManagement: React.FC = () => {
         }
       }
 
-      //clear after submit 
+      //clear after submitting 
       setStreet('');
       setCity('');
       setState('');
       setZip('');
-      setEditingIndex(null); //reset edit 
+      setEditingIndex(null); //reset state 
     } else {
       Alert.alert('Error!', 'All address fields must be filled out!');
     }
@@ -77,43 +68,32 @@ const PropertyManagement: React.FC = () => {
     try {
       await api.put(`/properties/${propertyId}`, { name: newAddress });
       Alert.alert('Successful!', 'Property has been updated!');
-      fetchProperties(); //update list 
+      fetchProperties(); //refresh list after update 
     } catch (error) {
       Alert.alert('Error!', 'Failed to update property.');
       console.error('Error updating property:', error);
     }
   };
 
-  //edit
+  //edit proj
   const handleEditProperty = (property: Property) => {
     const [street, city, state, zip] = property.name.split(', ');
     setStreet(street);
     setCity(city);
     setState(state);
     setZip(zip);
-    setEditingIndex(property.property_id); //track prop
+    setEditingIndex(property.property_id); //track proj being edit 
   };
 
-  //delete
+  //delete 
   const handleDeleteProperty = async (propertyId: number) => {
     try {
       await api.delete(`/properties/${propertyId}`);
       Alert.alert('Deleted!', 'Property has been removed.');
-      fetchProperties(); //update list 
+      fetchProperties(); //refresh list 
     } catch (error) {
       Alert.alert('Error!', 'Failed to delete property.');
       console.error('Error deleting property:', error);
-    }
-  };
-
-  //prop 
-  const handleSelectProperty = async (propertyId: number) => {
-    try {
-      await AsyncStorage.setItem('selectedPropertyId', propertyId.toString());
-      Alert.alert('Selected!', 'Property selected for project management.');
-    } catch (error) {
-      Alert.alert('Error!', 'Failed to select property.');
-      console.error('Error selecting property:', error);
     }
   };
 
@@ -178,12 +158,6 @@ const PropertyManagement: React.FC = () => {
                   >
                     <Text style={styles.buttonText}>Delete</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={() => handleSelectProperty(item.property_id)} 
-                    style={styles.selectButton}
-                  >
-                    <Text style={styles.buttonText}>Select Property</Text>
-                  </TouchableOpacity>
                 </View>
               </View>
             )}
@@ -195,76 +169,78 @@ const PropertyManagement: React.FC = () => {
 };
 
 
+
+
+
+
+
+
+
+//
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#e8f4f8',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    label: {
-        alignSelf: 'flex-start',
-        fontSize: 16,
-        marginBottom: 4,
-    },
-    input: {
-        height: 40,
-        width: '100%',
-        borderColor: '#ccc',
-        borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
-        borderRadius: 5,
-        backgroundColor: '#fff',
-    },
-    listContainer: {
-        marginTop: 20,
-        width: '100%',
-    },
-    listTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    propertyItemContainer: {
-        alignItems: 'flex-start',  
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1,
-        paddingVertical: 10,
-        marginBottom: 10,         
-    },
-    propertyItem: {
-        fontSize: 16,
-        marginBottom: 8,           
-    },
-    buttonContainer: {
-        flexDirection: 'row',       
-        justifyContent: 'flex-start', 
-        gap: 8,                     
-    },
-    editButton: {
-        backgroundColor: '#4CAF50',
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        borderRadius: 5,
-    },
-    deleteButton: {
-        backgroundColor: '#f44336',
-        paddingVertical: 5,
-        paddingHorizontal: 15,
-        borderRadius: 5,
-    },
-    selectButton: { 
-        backgroundColor: '#1E90FF', 
-        paddingVertical: 5, 
-        paddingHorizontal: 15, 
-        borderRadius: 5, 
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#e8f4f8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  label: {
+    alignSelf: 'flex-start',
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  input: {
+    height: 40,
+    width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+    borderRadius: 5,
+    backgroundColor: '#fff',
+  },
+  listContainer: {
+    marginTop: 20,
+    width: '100%',
+  },
+  listTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  propertyItemContainer: {
+    alignItems: 'flex-start',
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+    marginBottom: 10,
+  },
+  propertyItem: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 8,
+  },
+  editButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  deleteButton: {
+    backgroundColor: '#f44336',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
 
 export default PropertyManagement;

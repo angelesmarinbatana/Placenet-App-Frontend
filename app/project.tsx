@@ -11,7 +11,6 @@ import {
   Platform,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../API/api';
 
 interface Property {
@@ -233,6 +232,15 @@ const ProjectManagement: React.FC = () => {
     </View>
   );
 };
+
+
+
+
+
+
+
+
+//move
 
 const styles = StyleSheet.create({
   container: {

@@ -3,15 +3,15 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import React from 'react';
 
-
+/* Main Menu Page */
 export default function MainMenu() {
   const router = useRouter();
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        {/* Logo
-        <Image source={require('../assets/placenet.png')} style={styles.logo} /> */}
+        Logo
+        <Image source={require('../assets/placenet.png')} style={styles.logo} />
 
         {/* Title */}
         <Text style={styles.titleText}>Main Menu</Text>
@@ -40,15 +40,30 @@ export default function MainMenu() {
 
         <TouchableOpacity
           style={styles.buttonOutline}
-          onPress={() => router.push('/profile_summary')}
+          onPress={() => router.push('/property_summary')}
         >
-          <Text style={styles.buttonOutlineText}>Profile Summary</Text>
+          <Text style={styles.buttonOutlineText}>Property Summary</Text>
         </TouchableOpacity>
+        
+
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => router.push('/social_sums')}
+        >
+          <Text style={styles.buttonOutlineText}>Community Property Summaries</Text>
+        </TouchableOpacity>
+
+
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
+
+
+
+//move this
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',

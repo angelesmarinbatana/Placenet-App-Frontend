@@ -39,6 +39,14 @@ export default function IndexPage() {
   );
 }
 
+
+
+
+
+
+
+//need to move this///
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
