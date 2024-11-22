@@ -6,9 +6,7 @@ import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
 
 
-/* 
-NEW: index main entry screen
-*/
+/* sign in page */
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,9 +17,9 @@ export default function LoginPage() {
   async function handleSubmit() {
     console.log('Submitting:', username, password);
     try {
-      const response = await api.post('/users/authenticate', { username, password });
+      const response = await api.post('/auth/login', { username, password });
       const token = response.data.token;
-      await SecureStore.setItem('userToken', token);
+      await SecureStore.setItemAsync('userToken', token);
       setErrorMessage('');
       router.push('/main'); //go to main
     } catch (error) {
@@ -55,7 +53,7 @@ export default function LoginPage() {
           value={password}
           placeholder="Password"
           placeholderTextColor="#A9A9A9"
-          secureTextEntry
+          //secureTextEntry
         />
 
         {/* Error Message */}
