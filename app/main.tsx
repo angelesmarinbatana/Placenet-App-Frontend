@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import React from 'react';
 
-/* Main Menu Page */
+
 export default function MainMenu() {
   const router = useRouter();
 

@@ -1,5 +1,14 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, View, FlatList, Image, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
@@ -10,7 +19,7 @@ export default function ProfileSummaryPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    //get summary
+    //get prof sum
     async function fetchProfileSummary() {
       try {
         const token = await SecureStore.getItemAsync('userToken');
@@ -37,23 +46,94 @@ export default function ProfileSummaryPage() {
     fetchProfileSummary();
   }, []);
 
-  //render prop item
+  //refresh sum
+  const refreshProfileSummary = async () => {
+    setLoading(true);
+    setErrorMessage('');
+    await fetchProfileSummary();
+  };
+
+  //delete prop
+  const handleDeleteProperty = async (propertyId) => {
+    try {
+      await api.delete(`/properties/${propertyId}`);
+      Alert.alert('Success!', 'Property deleted successfully.');
+      refreshProfileSummary();
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      Alert.alert('Error!', 'Failed to delete property.');
+    }
+  };
+
+  //add update proj
+
+  //delete proj
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await api.delete(`/projects/${projectId}`);
+      Alert.alert('Success!', 'Project deleted successfully.');
+      refreshProfileSummary();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      Alert.alert('Error!', 'Failed to delete project.');
+    }
+  };
+
+  //add update proj
+
+  //delete doc
+  const handleDeleteDocument = async (documentId) => {
+    try {
+      await api.delete(`/documents/${documentId}`);
+      Alert.alert('Success!', 'Document deleted successfully.');
+      refreshProfileSummary();
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      Alert.alert('Error!', 'Failed to delete document.');
+    }
+  };
+
+  //render prop
   const renderProperty = ({ item }) => (
     <View style={styles.propertyContainer}>
       <Text style={styles.propertyName}>{item.name}</Text>
 
+      {/* Delete Property Button */}
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => handleDeleteProperty(item.property_id)}
+      >
+        <Text style={styles.buttonText}>Delete Property</Text>
+      </TouchableOpacity>
+
       {/* Projects Section */}
       <Text style={styles.sectionTitle}>Projects:</Text>
       {item.Projects && item.Projects.map((project) => (
-        <View key={project.project_id}>
+        <View key={project.project_id} style={styles.projectContainer}>
           <Text style={styles.itemText}>- {project.name}</Text>
+
+          {/* Delete Project Button */}
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDeleteProject(project.project_id)}
+          >
+            <Text style={styles.buttonText}>Delete Project</Text>
+          </TouchableOpacity>
 
           {/* Documents Section */}
           <Text style={styles.sectionTitle}>Documents:</Text>
           {project.Documents && project.Documents.map((document) => (
-            <Text key={document.document_id} style={styles.itemText}>
-              - {document.file_name}
-            </Text>
+            <View key={document.document_id} style={styles.documentContainer}>
+              <Text style={styles.itemText}>- {document.file_name}</Text>
+
+              {/* Delete Document Button */}
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteDocument(document.document_id)}
+              >
+                <Text style={styles.buttonText}>Delete Document</Text>
+              </TouchableOpacity>
+            </View>
           ))}
         </View>
       ))}
@@ -136,10 +216,29 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
   },
+  projectContainer: {
+    paddingBottom: 10,
+  },
+  documentContainer: {
+    paddingLeft: 10,
+    marginBottom: 5,
+  },
   itemText: {
     fontSize: 14,
     color: '#404040',
     marginBottom: 3,
+  },
+  deleteButton: {
+    backgroundColor: '#f44336',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    alignSelf: 'flex-start',
+    marginVertical: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   errorText: {
     color: 'red',

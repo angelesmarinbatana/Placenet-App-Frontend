@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
+import { View, 
+    TextInput, 
+    Button, 
+    StyleSheet, 
+    Alert, 
+    FlatList, 
+    Text, 
+    TouchableOpacity 
+} from 'react-native';
 import api from '../API/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,181 +17,181 @@ interface Property {
 }
 
 const PropertyManagement: React.FC = () => {
-    const [street, setStreet] = useState<string>(''); 
-    const [city, setCity] = useState<string>(''); 
-    const [state, setState] = useState<string>(''); 
-    const [zip, setZip] = useState<string>(''); 
-    const [properties, setProperties] = useState<Property[]>([]); 
-    const [editingIndex, setEditingIndex] = useState<number | null>(null); 
+  const [street, setStreet] = useState<string>(''); 
+  const [city, setCity] = useState<string>(''); 
+  const [state, setState] = useState<string>(''); 
+  const [zip, setZip] = useState<string>(''); 
+  const [properties, setProperties] = useState<Property[]>([]); 
+  const [editingIndex, setEditingIndex] = useState<number | null>(null); 
 
-    const fetchProperties = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        if (userId) {
-          const response = await api.get(`/properties?user_id=${userId}`); //userId from asyncstorage
-          setProperties(response.data);
+  //get all props
+  const fetchProperties = async () => {
+    try {
+      const response = await api.get('/properties');
+      setProperties(response.data);
+    } catch (error) {
+      Alert.alert('Error!', 'Failed to fetch properties.');
+      console.error('Error fetching properties:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  //add/edit
+  const handleAddProperty = async () => {
+    if (street.trim() && city.trim() && state.trim() && zip.trim()) {
+      const fullAddress = `${street}, ${city}, ${state}, ${zip}`;
+
+      if (editingIndex !== null) {
+        //update
+        await updateProperty(editingIndex, fullAddress);
+      } else {
+        //add
+        try {
+          const response = await api.post('/properties', {
+            name: fullAddress,
+          });
+          setProperties([...properties, response.data]); //add to list 
+          Alert.alert('Successful!', 'Property has been added!');
+        } catch (error) {
+          Alert.alert('Error!', 'Failed to add property.');
+          console.error('Error adding property:', error);
         }
-      } catch (error) {
-        Alert.alert('Error!', 'Failed to fetch properties.');
-        console.error('Error fetching properties:', error);
       }
-    };
-    //get
-    useEffect(() => {
-        fetchProperties();
-    }, []);
-    //add new
-    const handleAddProperty = async () => {
-        if (street.trim() && city.trim() && state.trim() && zip.trim()) {
-            const userId = await AsyncStorage.getItem('userId'); 
-            const fullAddress = `${street}, ${city}, ${state} ${zip}`;
 
-            if (editingIndex !== null) {
-                //edit in backend 
-                await updateProperty(editingIndex, fullAddress);
-            } else {
-                //add new 
-                try {
-                    const response = await api.post('/properties', {
-                        user_id: userId,
-                        name: fullAddress,
-                    });
-                    setProperties([...properties, response.data]); //add to list 
-                    Alert.alert('Successful!', 'Property has been added!');
-                } catch (error) {
-                    Alert.alert('Error!', 'Failed to add property.');
-                    console.error('Error adding property:', error);
-                }
-            }
-            //clear fields
-            setStreet('');
-            setCity('');
-            setState('');
-            setZip('');
-            setEditingIndex(null); //clear editing 
-        } else {
-            Alert.alert('Error!', 'All address fields must be filled out!');
-        }
-    };
-    //update 
-    const updateProperty = async (propertyId: number, newAddress: string) => {
-        try {
-            await api.put(`/properties/${propertyId}`, { name: newAddress });
-            Alert.alert('Successful!', 'Property has been updated!');
-            fetchProperties(); //refresh
-        } catch (error) {
-            Alert.alert('Error!', 'Failed to update property.');
-            console.error('Error updating property:', error);
-        }
-    };
-    //edit
-    const handleEditProperty = (property: Property) => {
-        const [street, city, state, zip] = property.name.split(', ');
-        setStreet(street);
-        setCity(city);
-        setState(state);
-        setZip(zip);
-        setEditingIndex(property.property_id); //track
-    };
-    //delete
+      //clear after submit 
+      setStreet('');
+      setCity('');
+      setState('');
+      setZip('');
+      setEditingIndex(null); //reset edit 
+    } else {
+      Alert.alert('Error!', 'All address fields must be filled out!');
+    }
+  };
 
-    const handleDeleteProperty = async (propertyId: number) => {
-        try {
-            await api.delete(`/properties/${propertyId}`);
-            Alert.alert('Deleted!', 'Property has been removed.');
-            fetchProperties();
-        } catch (error) {
-            Alert.alert('Error!', 'Failed to delete property.');
-            console.error('Error deleting property:', error);
-        }
-    };
+  //update
+  const updateProperty = async (propertyId: number, newAddress: string) => {
+    try {
+      await api.put(`/properties/${propertyId}`, { name: newAddress });
+      Alert.alert('Successful!', 'Property has been updated!');
+      fetchProperties(); //update list 
+    } catch (error) {
+      Alert.alert('Error!', 'Failed to update property.');
+      console.error('Error updating property:', error);
+    }
+  };
 
-    // NEW: select property for project management
-    const handleSelectProperty = async (propertyId: number) => {
-        try {
-            await AsyncStorage.setItem('selectedPropertyId', propertyId.toString());
-            Alert.alert('Selected!', 'Property selected for project management.');
-        } catch (error) {
-            Alert.alert('Error!', 'Failed to select property.');
-            console.error('Error selecting property:', error);
-        }
-    };
+  //edit
+  const handleEditProperty = (property: Property) => {
+    const [street, city, state, zip] = property.name.split(', ');
+    setStreet(street);
+    setCity(city);
+    setState(state);
+    setZip(zip);
+    setEditingIndex(property.property_id); //track prop
+  };
 
-    return (
-        <View style={styles.container}>
-            {/* Input fields for adding/editing properties */}
-            <Text style={styles.label}>Street:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter Street"
-                value={street}
-                onChangeText={setStreet}
-            />
-            <Text style={styles.label}>City:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter City"
-                value={city}
-                onChangeText={setCity}
-            />
-            <Text style={styles.label}>State:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter State"
-                value={state}
-                onChangeText={setState}
-            />
-            <Text style={styles.label}>Zip Code:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Enter Zip Code"
-                value={zip}
-                onChangeText={setZip}
-                keyboardType="numeric"
-            />
+  //delete
+  const handleDeleteProperty = async (propertyId: number) => {
+    try {
+      await api.delete(`/properties/${propertyId}`);
+      Alert.alert('Deleted!', 'Property has been removed.');
+      fetchProperties(); //update list 
+    } catch (error) {
+      Alert.alert('Error!', 'Failed to delete property.');
+      console.error('Error deleting property:', error);
+    }
+  };
 
-            <Button
-                title={editingIndex !== null ? "Update Property" : "Add Property"}
-                onPress={handleAddProperty}
-            />
+  //prop 
+  const handleSelectProperty = async (propertyId: number) => {
+    try {
+      await AsyncStorage.setItem('selectedPropertyId', propertyId.toString());
+      Alert.alert('Selected!', 'Property selected for project management.');
+    } catch (error) {
+      Alert.alert('Error!', 'Failed to select property.');
+      console.error('Error selecting property:', error);
+    }
+  };
 
-            {/* Display the list of properties */}
-            {properties.length > 0 && (
-                <View style={styles.listContainer}>
-                    <Text style={styles.listTitle}>Properties Added:</Text>
-                    <FlatList
-                        data={properties}
-                        keyExtractor={(item) => item.property_id.toString()}
-                        renderItem={({ item }) => (
-                            <View style={styles.propertyItemContainer}>
-                                <Text style={styles.propertyItem}>{item.name}</Text>
-                                <View style={styles.buttonContainer}>
-                                    <TouchableOpacity 
-                                        onPress={() => handleEditProperty(item)} 
-                                        style={styles.editButton}
-                                    >
-                                        <Text style={styles.buttonText}>Edit</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity 
-                                        onPress={() => handleDeleteProperty(item.property_id)} 
-                                        style={styles.deleteButton}
-                                    >
-                                        <Text style={styles.buttonText}>Delete</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity 
-                                        onPress={() => handleSelectProperty(item.property_id)} 
-                                        style={styles.selectButton}
-                                    >
-                                        <Text style={styles.buttonText}>Select Property</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        )}
-                    />
+  return (
+    <View style={styles.container}>
+      {/* Input fields for adding/editing properties */}
+      <Text style={styles.label}>Street:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Street"
+        value={street}
+        onChangeText={setStreet}
+      />
+      <Text style={styles.label}>City:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter City"
+        value={city}
+        onChangeText={setCity}
+      />
+      <Text style={styles.label}>State:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter State"
+        value={state}
+        onChangeText={setState}
+      />
+      <Text style={styles.label}>Zip Code:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Zip Code"
+        value={zip}
+        onChangeText={setZip}
+        keyboardType="numeric"
+      />
+
+      <Button
+        title={editingIndex !== null ? "Update Property" : "Add Property"}
+        onPress={handleAddProperty}
+      />
+
+      {/* Display the list of properties */}
+      {properties.length > 0 && (
+        <View style={styles.listContainer}>
+          <Text style={styles.listTitle}>Properties Added:</Text>
+          <FlatList
+            data={properties}
+            keyExtractor={(item) => item.property_id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.propertyItemContainer}>
+                <Text style={styles.propertyItem}>{item.name}</Text>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity 
+                    onPress={() => handleEditProperty(item)} 
+                    style={styles.editButton}
+                  >
+                    <Text style={styles.buttonText}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={() => handleDeleteProperty(item.property_id)} 
+                    style={styles.deleteButton}
+                  >
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={() => handleSelectProperty(item.property_id)} 
+                    style={styles.selectButton}
+                  >
+                    <Text style={styles.buttonText}>Select Property</Text>
+                  </TouchableOpacity>
                 </View>
+              </View>
             )}
+          />
         </View>
-    );
+      )}
+    </View>
+  );
 };
 
 
