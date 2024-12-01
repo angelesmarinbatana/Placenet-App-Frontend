@@ -1,6 +1,12 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Image 
+} from 'react-native';
 import React from 'react';
 
 /* Main Menu Page */
@@ -10,7 +16,6 @@ export default function MainMenu() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        Logo
         <Image source={require('../assets/placenet.png')} style={styles.logo} />
 
         {/* Title */}

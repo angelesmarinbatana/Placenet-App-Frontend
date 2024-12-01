@@ -1,6 +1,11 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import { StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Image 
+} from 'react-native';
 import React from 'react';
 
 export default function IndexPage() {

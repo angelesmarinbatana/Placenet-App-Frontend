@@ -1,6 +1,14 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
+import { 
+  StyleSheet, 
+  TextInput, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Image, 
+  Alert 
+} from 'react-native';
 import React from 'react';
 import api from '../API/api';
 

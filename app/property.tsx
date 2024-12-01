@@ -1,5 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
+import React, { 
+  useState,
+   useEffect,
+   useCallback 
+  } from 'react';
+
+import { 
+  View, 
+  TextInput, 
+  Button, 
+  StyleSheet, 
+  Alert, 
+  FlatList, 
+  Text, 
+  TouchableOpacity 
+} from 'react-native';
+
 import api from '../API/api';
 
 interface Property {
@@ -25,7 +40,6 @@ const PropertyManagement: React.FC = () => {
       console.error('Error fetching properties:', error);
     }
   };
-
   useEffect(() => {
     fetchProperties();
   }, []);
@@ -168,15 +182,6 @@ const PropertyManagement: React.FC = () => {
   );
 };
 
-
-
-
-
-
-
-
-
-//
 const styles = StyleSheet.create({
   container: {
     flex: 1,

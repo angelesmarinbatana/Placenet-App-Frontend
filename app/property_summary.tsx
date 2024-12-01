@@ -1,5 +1,12 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, View, FlatList, Image, ActivityIndicator } from 'react-native';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  FlatList, 
+  Image, 
+  ActivityIndicator 
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';

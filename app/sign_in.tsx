@@ -1,6 +1,13 @@
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, Image } from 'react-native';
+import { 
+  StyleSheet, 
+  TextInput, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Image 
+} from 'react-native';
 import React from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
@@ -26,10 +33,18 @@ export default function LoginPage() {
       await SecureStore.setItemAsync('userToken', token);
       await SecureStore.setItemAsync('userId', String(userId));
 
+      const storedToken = await SecureStore.getItemAsync('userToken');
+      if (storedToken) {
+      console.log('Token successfully saved to SecureStore:', storedToken);
+    } else {
+      console.error('Failed to save token in SecureStore');
+    }
+
       setErrorMessage('');//clear prev mgs
       router.push('/main'); //go to main
     } catch (error) {
       setErrorMessage('Invalid Credentials! Try Again.');
+      console.error('Login error:', error);
     }
   }
 
@@ -84,14 +99,6 @@ export default function LoginPage() {
     </SafeAreaProvider>
   );
 }
-
-
-
-
-
-
-
-
 
 const styles = StyleSheet.create({
   container: {
