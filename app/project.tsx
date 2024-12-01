@@ -330,10 +330,11 @@ const styles = StyleSheet.create({
   projectText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#0f3857',
   },
   projectDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#0f3857',
     marginVertical: 5,
   },
   buttonContainer: {

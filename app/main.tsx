@@ -53,7 +53,7 @@ export default function MainMenu() {
 
         <TouchableOpacity
           style={styles.buttonOutline}
-          onPress={() => router.push('/social_sums')}
+          onPress={() => router.push('/listing_summaries')}
         >
           <Text style={styles.buttonOutlineText}>Community Property Summaries</Text>
         </TouchableOpacity>

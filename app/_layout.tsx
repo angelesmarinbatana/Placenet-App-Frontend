@@ -12,7 +12,7 @@ export default function RootLayout() {
       <Stack.Screen name="property_summary" options={{ title: 'Property Summary' }} />
       <Stack.Screen name="sign_in" options={{ title: 'Sign In' }} />
       <Stack.Screen name="sign_up" options={{ title: 'Sign Up' }} />
-      <Stack.Screen name="social_sums" options={{ title: 'Social Project Summaries' }} />
+      <Stack.Screen name="listing_summaries" options={{ title: 'Social Project Summaries' }} />
     </Stack>
   );
 }

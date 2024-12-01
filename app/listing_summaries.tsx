@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 
 
 
-export default function PropertySummaryPage() {
+export default function ListingSummariesPage() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
