@@ -1,21 +1,19 @@
 import React, { 
   useState,
-   useEffect,
-   useCallback 
+   useEffect 
   } from 'react';
 
 import { 
   View, 
   TextInput, 
   Button, 
-  StyleSheet, 
   Alert, 
   FlatList, 
   Text, 
   TouchableOpacity 
 } from 'react-native';
-
 import api from '../API/api';
+import styles from '../styles/propertyStyles';
 
 interface Property {
   property_id: number;
@@ -37,7 +35,7 @@ const PropertyManagement: React.FC = () => {
       setProperties(response.data);
     } catch (error) {
       Alert.alert('Error!', 'Failed to fetch properties.');
-      console.error('Error fetching properties:', error);
+      //console.error('Error fetching properties:', error); //debug
     }
   };
   useEffect(() => {
@@ -62,10 +60,9 @@ const PropertyManagement: React.FC = () => {
           Alert.alert('Successful!', 'Property has been added!');
         } catch (error) {
           Alert.alert('Error!', 'Failed to add property.');
-          console.error('Error adding property:', error);
+          //console.error('Error adding property:', error); //debug
         }
       }
-
       //clear after submitting 
       setStreet('');
       setCity('');
@@ -85,7 +82,7 @@ const PropertyManagement: React.FC = () => {
       fetchProperties(); //refresh list after update 
     } catch (error) {
       Alert.alert('Error!', 'Failed to update property.');
-      console.error('Error updating property:', error);
+      //console.error('Error updating property:', error); //debug
     }
   };
 
@@ -107,13 +104,13 @@ const PropertyManagement: React.FC = () => {
       fetchProperties(); //refresh list 
     } catch (error) {
       Alert.alert('Error!', 'Failed to delete property.');
-      console.error('Error deleting property:', error);
+      //console.error('Error deleting property:', error); //debug 
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Input fields for adding/editing properties */}
+      {/* input fields for adding/editing properties */}
       <Text style={styles.label}>Street:</Text>
       <TextInput
         style={styles.input}
@@ -149,7 +146,7 @@ const PropertyManagement: React.FC = () => {
         onPress={handleAddProperty}
       />
 
-      {/* Display the list of properties */}
+      {/* display the list of properties */}
       {properties.length > 0 && (
         <View style={styles.listContainer}>
           <Text style={styles.listTitle}>Properties Added:</Text>
@@ -181,71 +178,5 @@ const PropertyManagement: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#e8f4f8',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  label: {
-    alignSelf: 'flex-start',
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  input: {
-    height: 40,
-    width: '100%',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-    backgroundColor: '#fff',
-  },
-  listContainer: {
-    marginTop: 20,
-    width: '100%',
-  },
-  listTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  propertyItemContainer: {
-    alignItems: 'flex-start',
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-    marginBottom: 10,
-  },
-  propertyItem: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    gap: 8,
-  },
-  editButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-  },
-  deleteButton: {
-    backgroundColor: '#f44336',
-    paddingVertical: 5,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-});
 
 export default PropertyManagement;

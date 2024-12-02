@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { 
+  useState, 
+  useEffect 
+} from 'react';
+
 import {
   View,
   Button,
   Text,
-  StyleSheet,
   TouchableOpacity,
   FlatList,
   Alert,
@@ -11,6 +14,7 @@ import {
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import api from '../API/api';
+import styles from '../styles/documentStyles';
 
 
 const UploadFile = () => {
@@ -26,7 +30,7 @@ const UploadFile = () => {
         setProjects(response.data);
       } catch (error) {
         Alert.alert('Error', 'Failed to fetch projects.');
-        console.error('Error fetching projects:', error);
+        //console.error('Error fetching projects:', error); //debug
       }
     };
     fetchProjects();
@@ -38,7 +42,7 @@ const UploadFile = () => {
       setDocuments(response.data);
     } catch (error) {
       Alert.alert('Error', 'Failed to fetch documents.');
-      console.error('Error fetching documents:', error);
+      //console.error('Error fetching documents:', error); //debug
     }
   };
 
@@ -63,10 +67,10 @@ const UploadFile = () => {
           ...successResult.assets,
         ]);
       } else {
-        console.log('Document selection cancelled.');
+        //console.log('Document selection cancelled.'); //debug 
       }
     } catch (error) {
-      console.log('Error picking documents:', error);
+      //console.log('Error picking documents:', error); //debug
     }
   };
 
@@ -92,14 +96,14 @@ const UploadFile = () => {
           },
         });
 
-        console.log('Document uploaded:', response.data);
+        //console.log('Document uploaded:', response.data); //debug
       }
 
       setSelectedDocuments([]);
       Alert.alert('Success', 'Documents uploaded successfully.');
       fetchDocuments(selectedProject.project_id); //refrsh list
     } catch (error) {
-      console.error('Error uploading documents:', error);
+      //.error('Error uploading documents:', error); //debug
       Alert.alert('Error', 'Failed to upload documents.');
     }
   };
@@ -116,7 +120,7 @@ const UploadFile = () => {
         Alert.alert('Error', 'Failed to retrieve document URL.');
       }
     } catch (error) {
-      console.error('Error fetching document URL:', error);
+      //console.error('Error fetching document URL:', error); //debug
       Alert.alert('Error', 'Failed to download document.');
     }
   };
@@ -129,7 +133,7 @@ const UploadFile = () => {
       fetchDocuments(selectedProject.project_id); //refresh
     } catch (error) {
       Alert.alert('Error!', 'Failed to delete document.');
-      console.error('Error deleting document:', error);
+      //console.error('Error deleting document:', error); //debug
     }
   };
 
@@ -208,73 +212,4 @@ const UploadFile = () => {
     </View>
   );
 };
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#e8f4f8',
-    padding: 20,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  projectItem: {
-    padding: 15,
-    borderRadius: 5,
-    backgroundColor: '#e0e0e0',
-    marginVertical: 5,
-    marginHorizontal: 10,
-  },
-  selectedProject: {
-    backgroundColor: '#4CAF50',
-  },
-  projectText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  selectedProjectText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
-  uploadButton: {
-    marginVertical: 20,
-  },
-  documentItem: {
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  fileName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  removeButton: {
-    color: 'red',
-    marginTop: 5,
-    fontWeight: 'bold',
-  },
-  downloadButton: {
-    color: 'blue',
-    marginTop: 5,
-    fontWeight: 'bold',
-  },
-  uploadDocumentsButton: {
-    backgroundColor: '#1e90ff',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  uploadDocumentsText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
-
 export default UploadFile;

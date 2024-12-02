@@ -1,4 +1,7 @@
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { 
+  SafeAreaProvider, 
+  SafeAreaView 
+} from 'react-native-safe-area-context';
 import { 
   StyleSheet, 
   Text, 
@@ -10,6 +13,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
+import styles from '../styles/property_summaryStyle';
 
 export default function PropertySummaryPage() {
   const [properties, setProperties] = useState([]);
@@ -35,7 +39,7 @@ export default function PropertySummaryPage() {
         setProperties(response.data.Properties);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching property summary:', error);
+        //console.error('Error fetching property summary:', error); //debug
         setErrorMessage('Failed to load property summary. Please try again later.');
         setLoading(false);
       }
@@ -49,13 +53,13 @@ export default function PropertySummaryPage() {
     <View style={styles.propertyContainer}>
       <Text style={styles.propertyName}>{item.name}</Text>
 
-      {/* Projects Section */}
+      {/* projects */}
       <Text style={styles.sectionTitle}>Projects:</Text>
       {item.Projects && item.Projects.map((project) => (
         <View key={project.project_id}>
           <Text style={styles.itemText}>- {project.name}</Text>
 
-          {/* Documents Section */}
+          {/* documents */}
           <Text style={styles.sectionTitle}>Documents:</Text>
           {project.Documents && project.Documents.map((document) => (
             <Text key={document.document_id} style={styles.itemText}>
@@ -77,15 +81,15 @@ export default function PropertySummaryPage() {
         />
         <Text style={styles.titleText}>Property Summary</Text>
 
-        {/* Loading Indicator */}
+        {/* loading */}
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            {/* Error Message */}
+            {/* error */}
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-            {/* Property List */}
+            {/* property list */}
             <FlatList
               data={properties}
               keyExtractor={(item) => item.property_id.toString()}
@@ -98,64 +102,3 @@ export default function PropertySummaryPage() {
     </SafeAreaProvider>
   );
 }
-
-
-
-
-
-
-//
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-  },
-  logo: {
-    width: 200,
-    height: 110,
-    marginBottom: 20,
-  },
-  titleText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 20,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  propertyContainer: {
-    backgroundColor: '#F8F8F8',
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 15,
-    width: '100%',
-    borderColor: '#E0E0E0',
-    borderWidth: 1,
-  },
-  propertyName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#404040',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#666',
-    marginTop: 10,
-    marginBottom: 5,
-  },
-  itemText: {
-    fontSize: 14,
-    color: '#404040',
-    marginBottom: 3,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-  },
-});
