@@ -1,43 +1,85 @@
-import { View, Button, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import * as DocumentPicker from "expo-document-picker"
+import React, { 
+  useState, 
+  useEffect 
+} from 'react';
+
+import {
+  View,
+  Button,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+  Linking,
+} from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
 import api from '../API/api';
-/* 
-  'DOCUMENT'PAGE  
-*/
+import styles from '../styles/documentStyles';
+
 
 const UploadFile = () => {
+  const [projects, setProjects] = useState([]); 
+  const [selectedProject, setSelectedProject] = useState(null); 
+  const [documents, setDocuments] = useState([]); 
   const [selectedDocuments, setSelectedDocuments] = useState<DocumentPicker.DocumentPickerAsset[]>([]);
 
-  const pickDocument = async () => {
-    try{
-      const result = await DocumentPicker.getDocumentAsync({ multiple: true});
-      if (!result.canceled) {
-        const successResult = result as DocumentPicker.DocumentPickerSuccessResult;
-
-        if (selectedDocuments.length + successResult.assets.length <= 5) {
-          console.log('Hello')
-          setSelectedDocuments((prevSelectedDocuments) => [
-            ...prevSelectedDocuments,
-            ...successResult.assets,
-          ]);
-
-        } else {
-          console.log("Maximim of 5 documents allowed.");
-        }
-      } else {
-        console.log("Document selection cancelled.");
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get('/projects');
+        setProjects(response.data);
+      } catch (error) {
+        Alert.alert('Error', 'Failed to fetch projects.');
+        //console.error('Error fetching projects:', error); //debug
       }
-    } catch (error){
-      console.log("Error picking documents:", error)
+    };
+    fetchProjects();
+  }, []);
+
+  const fetchDocuments = async (projectId: number) => {
+    try {
+      const response = await api.get(`/documents?project_id=${projectId}`);
+      setDocuments(response.data);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch documents.');
+      //console.error('Error fetching documents:', error); //debug
     }
   };
 
+  const handleSelectProject = (project) => {
+    setSelectedProject(project);
+    fetchDocuments(project.project_id);
+    Alert.alert('Project Selected', `You selected: ${project.name}`);
+  };
 
+  const pickDocument = async () => {
+    if (!selectedProject) {
+      Alert.alert('Error', 'Please select a project before uploading documents.');
+      return;
+    }
 
+    try {
+      const result = await DocumentPicker.getDocumentAsync({ type: 'application/pdf' });
+      if (!result.canceled) {
+        const successResult = result as DocumentPicker.DocumentPickerSuccessResult;
+        setSelectedDocuments((prevSelectedDocuments) => [
+          ...prevSelectedDocuments,
+          ...successResult.assets,
+        ]);
+      } else {
+        //console.log('Document selection cancelled.'); //debug 
+      }
+    } catch (error) {
+      //console.log('Error picking documents:', error); //debug
+    }
+  };
 
-  //POST
   const uploadDocuments = async () => {
+    if (!selectedProject) {
+      Alert.alert('Error', 'Please select a project before uploading documents.');
+      return;
+    }
+
     try {
       for (const document of selectedDocuments) {
         const formData = new FormData();
@@ -45,147 +87,129 @@ const UploadFile = () => {
           uri: document.uri,
           name: document.name,
           type: document.mimeType,
-        });
-        const response = await api.post('/documents', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        console.log("Document uploaded:", response.data);
-      }
-      // Clear selected documents after upload
-      setSelectedDocuments([]);
-    } catch (error) {
-      console.error("Error uploading documents:", error);
-    }
-  }; 
-  
-  
-  //DELETE 
-  const deleteDocument = async (index: number) => {
-    const document = selectedDocuments[index];
-    try {
-      // Assuming the backend needs a document ID or some identifier to delete
-      const documentId = document.id;  // Make sure each document has an 'id' assigned when uploaded
-      await api.delete(`/documents/${documentId}`);
-      console.log("Document deleted:", documentId);
+        } as any); 
+        formData.append('project_id', selectedProject.project_id);
 
-      // Remove the document from the local state
-      setSelectedDocuments((prevSelectedDocuments) =>
-        prevSelectedDocuments.filter((_, i) => i !== index)
-      );
+        const response = await api.post('/documents', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        //console.log('Document uploaded:', response.data); //debug
+      }
+
+      setSelectedDocuments([]);
+      Alert.alert('Success', 'Documents uploaded successfully.');
+      fetchDocuments(selectedProject.project_id); //refrsh list
     } catch (error) {
-      console.error("Error deleting document:", error);
+      //.error('Error uploading documents:', error); //debug
+      Alert.alert('Error', 'Failed to upload documents.');
     }
   };
 
+  //downld pdf from S3 w pre-signed url
+  const handleDownloadDocument = async (documentId: number) => {
+    try {
+      const response = await api.get(`/documents/${documentId}/download`);
+      const url = response.data.url;
 
+      if (url) {
+        Linking.openURL(url); //open url
+      } else {
+        Alert.alert('Error', 'Failed to retrieve document URL.');
+      }
+    } catch (error) {
+      //console.error('Error fetching document URL:', error); //debug
+      Alert.alert('Error', 'Failed to download document.');
+    }
+  };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   // Additional code snippet to get the document type 
-const getFileType = (fileName: string): string => {
-  const extension = fileName.split('.').pop()?.toLowerCase();
-  switch (extension) {
-    case 'pdf':
-      return 'PDF';
-    case 'doc':
-    case 'docx':
-      return 'Word';
-    case 'xls':
-    case 'xlsx':
-      return 'Excel';
-    default:
-      return 'Unknown';
-  }
-};
-
-// Remove a document from the array 
-const removeDocument = (index: number) => {
-  setSelectedDocuments((prevSelectedDocuments) =>
-    prevSelectedDocuments.filter((_, i) => i !== index)
-  );
-};
+  //delete doc
+  const handleDeleteDocument = async (documentId: number) => {
+    try {
+      await api.delete(`/documents/${documentId}`);
+      Alert.alert('Deleted!', 'Document has been removed.');
+      fetchDocuments(selectedProject.project_id); //refresh
+    } catch (error) {
+      Alert.alert('Error!', 'Failed to delete document.');
+      //console.error('Error deleting document:', error); //debug
+    }
+  };
 
   return (
-    <View style={styles.background}>
-      <Text style={styles.file}>Upload File</Text>
-      <View style={styles.button}>
-        <TouchableOpacity>
-          <Button
-            title="upload your file"
-            color="#1e90ff"
-            onPress={pickDocument}
-          />
-        </TouchableOpacity>
+    <View style={styles.container}>
+      {/* Project Selection */}
+      <Text style={styles.title}>Select a Project:</Text>
+      <FlatList
+        data={projects}
+        keyExtractor={(item) => item.project_id.toString()}
+        horizontal
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.projectItem,
+              selectedProject?.project_id === item.project_id && styles.selectedProject,
+            ]}
+            onPress={() => handleSelectProject(item)}
+          >
+            <Text style={styles.projectText}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      {/* Display Selected Project */}
+      {selectedProject && (
+        <Text style={styles.selectedProjectText}>
+          Selected Project: {selectedProject.name}
+        </Text>
+      )}
+
+      {/* Upload Button */}
+      <View style={styles.uploadButton}>
+        <Button title="Upload PDF" color="#1e90ff" onPress={pickDocument} />
       </View>
 
-      {/* Display selected documents */}
+      {/* Display Selected Documents */}
       <FlatList
         data={selectedDocuments}
         keyExtractor={(item, index) => item.uri + index}
         renderItem={({ item, index }) => (
           <View style={styles.documentItem}>
             <Text style={styles.fileName}>Name: {item.name}</Text>
-            <Text>Type: {getFileType(item.name)}</Text>
-            <TouchableOpacity onPress={() => removeDocument(index)}>
+            <TouchableOpacity onPress={() => handleDeleteDocument(index)}>
               <Text style={styles.removeButton}>Remove</Text>
             </TouchableOpacity>
           </View>
         )}
       />
+
+      {/* Upload Documents Button */}
+      {selectedDocuments.length > 0 && (
+        <TouchableOpacity style={styles.uploadDocumentsButton} onPress={uploadDocuments}>
+          <Text style={styles.uploadDocumentsText}>Upload Documents</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* List All Uploaded Documents */}
+      {selectedProject && (
+        <FlatList
+          data={documents}
+          keyExtractor={(item) => item.document_id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.documentItem}>
+              <Text style={styles.fileName}>Name: {item.file_name}</Text>
+              <TouchableOpacity onPress={() => handleDownloadDocument(item.document_id)}>
+                <Text style={styles.downloadButton}>Download</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteDocument(item.document_id)}>
+                <Text style={styles.removeButton}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      )}
     </View>
-  ); 
-}
-
-
-const styles = StyleSheet.create({
-    background: {
-      flex: 1,
-      backgroundColor: '#e8f4f8',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    file: {
-      color: "black",
-      marginHorizontal: 145,
-    },
-    button: {
-      marginHorizontal: 60,
-    },
-    documentItem: {
-      marginTop: 10,
-      padding: 10,
-      backgroundColor: '#f9f9f9',
-      borderRadius: 5,
-      alignItems: 'center',
-      width: 300,
-    },
-    fileName: {
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    removeButton: {
-      color: 'red',
-      marginTop: 5,
-      fontWeight: 'bold',
-    },
-  });
-
+  );
+};
 export default UploadFile;

@@ -1,71 +1,64 @@
-import { View, Button, StyleSheet, TouchableOpacity, Text } from 'react-native'; // need to import on every page -> import things from react native lib
-import { useRouter } from 'expo-router'; // need to import on every page -> for app routing 
+import { 
+  SafeAreaProvider, 
+  SafeAreaView 
+} from 'react-native-safe-area-context';
+
+import {  
+  Text, 
+  TouchableOpacity,  
+  Image 
+} from 'react-native';
+import { useRouter } from 'expo-router';
 import React from 'react';
+import styles from '../styles/mainStyles';
 
-/* 
-  'MAIN MENU' PAGE  
-*/
-
-export default function MainMenu() { //make resuable component 
-  const router = useRouter(); // use router for navigation
+export default function MainMenu() {
+  const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      {/* Custom Button */}
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => router.push('/property')}
-      >
-        <Text style={styles.buttonText}>Add a new Property</Text>
-      </TouchableOpacity>
-      
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Image source={require('../assets/placenet.png')} style={styles.logo} />
 
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => router.push('/project')}
-      >
-        <Text style={styles.buttonText}>Add a New Project</Text>
-      </TouchableOpacity>
-      
+        {/* Title */}
+        <Text style={styles.titleText}>Main Menu</Text>
 
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => router.push('/document')}
-      >
-        <Text style={styles.buttonText}>Add an Invoice/ Receipt</Text>
-      </TouchableOpacity>
+        {/* Custom Buttons */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/property')}
+        >
+          <Text style={styles.buttonText}>Add a New Property</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => router.push('/document')}
-      >
-        <Text style={styles.buttonText}>Profile Summary</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/project')}
+        >
+          <Text style={styles.buttonText}>Add a New Project</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/document')}
+        >
+          <Text style={styles.buttonText}>Add an Invoice/Receipt</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => router.push('/property_summary')}
+        >
+          <Text style={styles.buttonOutlineText}>Property Summary</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => router.push('/listing_summaries')}
+        >
+          <Text style={styles.buttonOutlineText}>Community Property Summaries</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
-   
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#25292e',
-    flex:1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    backgroundColor: '#5a5a5a', //
-    paddingVertical: 12,        // adjust h
-    paddingHorizontal: 20,      // adjust w
-    borderRadius: 15,            
-    marginVertical: 8,          
-    width: '80%',               //adjust  
-    alignItems: 'center',
-    borderWidth: 3,
-
-  },
-  buttonText: {          
-    fontSize: 17,
-    color: '#fff',
-  },
-});
