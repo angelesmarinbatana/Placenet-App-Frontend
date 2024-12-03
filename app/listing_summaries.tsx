@@ -40,7 +40,7 @@ export default function ListingSummariesPage() {
         var i = 1;
         properties["Properties"] = response.data[0].Properties;
 
-        while(i != response.data.length-1){
+        while(i != response.data.length){
           for(var j in response.data[i].Properties) 
             properties["Properties"].push(response.data[i].Properties[j]);
           i++;
@@ -50,7 +50,7 @@ export default function ListingSummariesPage() {
         
         //console.log(response.data); //debug 
         //console.log(properties["Properties"]); //debug 
-
+        //console.log(properties.Properties);  //debug
         setProperties(properties.Properties);
         setLoading(false);
       } catch (error) {
