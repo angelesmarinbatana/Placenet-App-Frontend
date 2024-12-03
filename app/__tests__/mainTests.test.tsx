@@ -58,6 +58,6 @@ describe('MainMenu Component', () => {
     expect(pushMock).toHaveBeenCalledWith('/property_summary');
 
     fireEvent.press(getByText('Community Property Summaries'));
-    expect(pushMock).toHaveBeenCalledWith('/social_sums');
+    expect(pushMock).toHaveBeenCalledWith('/listing_summaries');
   });
 });
