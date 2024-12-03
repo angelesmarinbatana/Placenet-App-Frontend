@@ -2,6 +2,7 @@ import {
   SafeAreaProvider, 
   SafeAreaView 
 } from 'react-native-safe-area-context';
+
 import { 
   StyleSheet, 
   Text, 
@@ -10,12 +11,16 @@ import {
   Image, 
   ActivityIndicator 
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+
+import React, { 
+  useEffect, 
+  useState 
+} from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
-import styles from '../styles/property_summaryStyle';
+import styles from '../styles/listing_summariesStyles';
 
-export default function PropertySummaryPage() {
+export default function ListingSummariesPage() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,13 +35,23 @@ export default function PropertySummaryPage() {
           return;
         }
 
-        const response = await api.get('/summary', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await api.get('/listings');
+        var properties: { [id: string] : Array<T>; } = {}
+        var i = 1;
+        properties["Properties"] = response.data[0].Properties;
 
-        setProperties(response.data.Properties);
+        while(i != response.data.length-1){
+          for(var j in response.data[i].Properties) 
+            properties["Properties"].push(response.data[i].Properties[j]);
+          i++;
+        }
+       // console.log(properties); //debug
+        
+        
+        //console.log(response.data); //debug 
+        //console.log(properties["Properties"]); //debug 
+
+        setProperties(properties.Properties);
         setLoading(false);
       } catch (error) {
         //console.error('Error fetching property summary:', error); //debug
@@ -53,13 +68,13 @@ export default function PropertySummaryPage() {
     <View style={styles.propertyContainer}>
       <Text style={styles.propertyName}>{item.name}</Text>
 
-      {/* projects */}
+      {/* Projects Section */}
       <Text style={styles.sectionTitle}>Projects:</Text>
       {item.Projects && item.Projects.map((project) => (
         <View key={project.project_id}>
           <Text style={styles.itemText}>- {project.name}</Text>
 
-          {/* documents */}
+          {/* Documents Section */}
           <Text style={styles.sectionTitle}>Documents:</Text>
           {project.Documents && project.Documents.map((document) => (
             <Text key={document.document_id} style={styles.itemText}>
@@ -81,15 +96,15 @@ export default function PropertySummaryPage() {
         />
         <Text style={styles.titleText}>Property Summary</Text>
 
-        {/* loading */}
+        {/* Loading Indicator */}
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            {/* error */}
+            {/* Error Message */}
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-            {/* property list */}
+            {/* Property List */}
             <FlatList
               data={properties}
               keyExtractor={(item) => item.property_id.toString()}

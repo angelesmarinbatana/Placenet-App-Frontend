@@ -1,8 +1,20 @@
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { 
+  SafeAreaProvider, 
+  SafeAreaView 
+} from 'react-native-safe-area-context';
+
+import { 
+  TextInput, 
+  Text, 
+  TouchableOpacity, 
+  View, 
+  Image, 
+  Alert 
+} from 'react-native';
 import { useRouter } from 'expo-router';
-import { StyleSheet, TextInput, Text, TouchableOpacity, View, Image, Alert } from 'react-native';
 import React from 'react';
 import api from '../API/api';
+import styles from '../styles/sign_upStyles';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -37,13 +49,8 @@ export default function SignUpPage() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Image
-          source={require('../assets/placenet.png')}
-          style={styles.logo}
-        />
+        <Image source={require('../assets/placenet.png')} style={styles.logo} />
         <Text style={styles.titleText}>Create Your Account</Text>
-
-        {/* Username Input */}
         <TextInput
           style={styles.input}
           onChangeText={onChangeUsername}
@@ -51,8 +58,6 @@ export default function SignUpPage() {
           placeholder="Username"
           placeholderTextColor="#A9A9A9"
         />
-
-        {/* Password Input */}
         <TextInput
           style={styles.input}
           onChangeText={onChangePassword}
@@ -61,8 +66,6 @@ export default function SignUpPage() {
           placeholderTextColor="#A9A9A9"
           secureTextEntry
         />
-
-        {/* Confirm Password Input */}
         <TextInput
           style={styles.input}
           onChangeText={onChangeConfirmPassword}
@@ -71,16 +74,10 @@ export default function SignUpPage() {
           placeholderTextColor="#A9A9A9"
           secureTextEntry
         />
-
-        {/* Error Message */}
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-
-        {/* Sign Up Button */}
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-
-        {/* Link to Sign In */}
         <View style={styles.signinContainer}>
           <Text style={styles.signinText}>Already have an account?</Text>
           <Text
@@ -94,71 +91,3 @@ export default function SignUpPage() {
     </SafeAreaProvider>
   );
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-  },
-  logo: {
-    width: 200,
-    height: 110,
-    marginBottom: 20,
-  },
-  titleText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#F0F0F0',
-    borderColor: '#C0C0C0',
-    borderRadius: 5,
-    height: 50,
-    width: '80%',
-    margin: 12,
-    paddingHorizontal: 10,
-    fontSize: 16,
-    color: '#000',
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: '#404040ff',
-    borderRadius: 5,
-    height: 50,
-    width: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  signinContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  signinText: {
-    color: '#A9A9A9',
-    fontSize: 14,
-  },
-  signinLink: {
-    color: '#0000FF',
-    fontSize: 14,
-    marginLeft: 5,
-    textDecorationLine: 'underline',
-  },
-});

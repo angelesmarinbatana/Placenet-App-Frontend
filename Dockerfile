@@ -4,7 +4,7 @@ WORKDIR /usr/src/app/placenet-app
 
 COPY package*.json ./
 
-RUN npm install && npm install axios
+RUN npm install && npm install axios && npx expo install expo-secure-store
 
 EXPOSE 8081
 
