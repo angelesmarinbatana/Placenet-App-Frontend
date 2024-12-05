@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import IndexPage from '../index'; // Adjust the import path if needed
+import IndexPage from '../app/index'; // Adjust the import path if needed
 import { useRouter } from 'expo-router';
 
 // Mock the useRouter hook

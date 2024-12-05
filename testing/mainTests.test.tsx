@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import MainMenu from '../main'; // Update the path to your component
+import MainMenu from '../app/main'; // Update the path to your component
 import { useRouter } from 'expo-router';
 
 // Mock the router
