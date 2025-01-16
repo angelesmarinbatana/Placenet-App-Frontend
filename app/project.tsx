@@ -50,7 +50,7 @@ const ProjectManagement: React.FC = () => {
       setProperties(response.data);
     } catch (error) {
       Alert.alert('Error!', 'Failed to fetch properties.');
-      console.error('Error fetching properties:', error);
+      //console.error('Error fetching properties:', error); //debug
     }
   };
 
@@ -62,7 +62,7 @@ const ProjectManagement: React.FC = () => {
       }
     } catch (error) {
       Alert.alert('Error!', 'Failed to fetch projects.');
-      console.error('Error fetching property ID:', error);
+      //.error('Error fetching property ID:', error); //debug
     }
   };
 
@@ -72,7 +72,7 @@ const ProjectManagement: React.FC = () => {
       setProjects(response.data);
     } catch (error) {
       Alert.alert('Error!', 'Failed to fetch projects.');
-      console.error('Error fetching projects:', error);
+      //console.error('Error fetching projects:', error); //debug
     }
   };
 
@@ -85,7 +85,7 @@ const ProjectManagement: React.FC = () => {
       fetchProjects(property.property_id);
     } catch (error) {
       Alert.alert('Error!', 'Failed to select property.');
-      console.error('Error saving property ID:', error);
+      //console.error('Error saving property ID:', error); debug
     }
   };
 
@@ -151,7 +151,7 @@ const ProjectManagement: React.FC = () => {
       setProjects(projects.filter((project) => project.project_id !== projectId));
     } catch (error) {
       Alert.alert('Error!', 'Failed to delete project.');
-      console.error('Error deleting project:', error);
+      //console.error('Error deleting project:', error); //debug
     }
   };
 
