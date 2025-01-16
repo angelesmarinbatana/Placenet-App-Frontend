@@ -1,7 +1,7 @@
 import React, { 
   useState,
    useEffect 
-  } from 'react';
+} from 'react';
 
 import { 
   View, 
@@ -42,6 +42,15 @@ const PropertyManagement: React.FC = () => {
     fetchProperties();
   }, []);
 
+  //helper function to reset form fields:
+  const resetFeilds = () => {
+    setStreet('');
+    setCity('');
+    setState('');
+    setZip('');
+    setEditingIndex(null);
+  };
+  
   //add/edit
   const handleAddProperty = async () => {
     if (street.trim() && city.trim() && state.trim() && zip.trim()) {
@@ -63,16 +72,12 @@ const PropertyManagement: React.FC = () => {
           //console.error('Error adding property:', error); //debug
         }
       }
-      //clear after submitting 
-      setStreet('');
-      setCity('');
-      setState('');
-      setZip('');
-      setEditingIndex(null); //reset state 
+      resetFeilds();
     } else {
       Alert.alert('Error!', 'All address fields must be filled out!');
     }
   };
+
 
   //update
   const updateProperty = async (propertyId: number, newAddress: string) => {

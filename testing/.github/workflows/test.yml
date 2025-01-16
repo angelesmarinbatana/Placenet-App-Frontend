@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  # This will run the workflow any time a pull request is opened/updated on your repo
+  pull_request:
+    branches: [ development ]  # Or use whatever branches you're working with
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the code from your repository
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      # 2. Set up Node (Expo generally supports Node 14 or 16+)
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+        # or "npm ci" if you want a clean install from package-lock.json
+
+      # 4. Run Jest tests with expo preset
+      - name: Run tests
+        run: npx jest
+        # This will automatically use "jest-expo" because you have that configured in package.json
