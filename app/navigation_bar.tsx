@@ -30,6 +30,8 @@ function MainContainer() {
             // You can return any component that you like here!
             return <Ionicons name={'home'} size={size} color={color} />;
           },
+          tabBarActiveTintColor: 'blue',
+          tabBarInactiveTintColor: 'gray',
         })}>
 
         <Tab.Screen name={homeName} component={HomeScreen} />
