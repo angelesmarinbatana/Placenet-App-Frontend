@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 
 jest.mock('@expo/vector-icons', () => ({
-  MaterialCommunityIcons: 'MaterialCommunityIcons',  // Mock the icon as a string
+  MaterialCommunityIcons: 'MaterialCommunityIcons',
 }));
 
 jest.mock('@react-native-async-storage/async-storage', () => ({

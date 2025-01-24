@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Screen
+// Screens
 import HomeScreen from './main';
 import ProjectScreen from './project';
 import PropertyScreen from './property';
@@ -11,7 +11,7 @@ import DocumentScreen from './document';
 import ProfileScreen from './property_summary';
 import ListingsScreen from './listing_summaries';
 
-//Screen name
+//Screen names
 const homeName = "Home";
 const projectName = "Project";
 const propertyName = "Property";
