@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import React from 'react';
 import styles from '../styles/mainStyles';
+import MainContainer from './navigation_bar'; 
 
 export default function MainMenu() {
   const router = useRouter();
@@ -60,5 +61,6 @@ export default function MainMenu() {
         </TouchableOpacity>
       </SafeAreaView>
     </SafeAreaProvider>
+    
   );
 }

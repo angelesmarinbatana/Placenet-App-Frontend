@@ -15,6 +15,7 @@ import React from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
 import styles from '../styles/sign_inStyles';
+import MainContainer from './navigation_bar'; 
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function LoginPage() {
     }
 
       setErrorMessage('');//clear prev mgs
-      router.push('/main'); //go to main
+      router.push('./navigation_bar'); //go to main
     } catch (error) {
       setErrorMessage('Invalid Credentials! Try Again.');
       console.error('Login error:', error);
