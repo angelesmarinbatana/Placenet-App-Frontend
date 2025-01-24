@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Screens
+// Screen
 import HomeScreen from './main';
 import ProjectScreen from './project';
 import PropertyScreen from './property';
@@ -11,7 +11,7 @@ import DocumentScreen from './document';
 import ProfileScreen from './property_summary';
 import ListingsScreen from './listing_summaries';
 
-//Screen names
+//Screen name
 const homeName = "Home";
 const projectName = "Project";
 const propertyName = "Property";
@@ -50,7 +50,6 @@ function MainContainer() {
               iconName = focused ? 'account-group' : 'account-group-outline';
             }    
 
-            // You can return any component that you like here!
             return <MaterialCommunityIcons name={iconName} size={size} color={color}/>;
           },
           tabBarActiveTintColor: '#404040ff',

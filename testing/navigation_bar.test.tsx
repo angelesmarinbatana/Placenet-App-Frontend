@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
-import MainContainer from '../app/navigation_bar'; // Your component file
+import MainContainer from '../app/navigation_bar';
 import { NavigationContainer } from '@react-navigation/native';
 
-// Mocking @expo/vector-icons to prevent rendering issues during testing
+
 jest.mock('@expo/vector-icons', () => ({
   MaterialCommunityIcons: 'MaterialCommunityIcons',  // Mock the icon as a string
 }));
