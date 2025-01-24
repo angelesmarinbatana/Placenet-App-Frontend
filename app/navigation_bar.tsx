@@ -23,7 +23,7 @@ const Tab = createBottomTabNavigator();
 
 function MainContainer() {
   return (
-    <NavigationContainer>
+    <NavigationContainer independent={true}>
       <Tab.Navigator
         initialRouteName={homeName}
         screenOptions={({ route }) => ({
@@ -51,7 +51,7 @@ function MainContainer() {
             }    
 
             // You can return any component that you like here!
-            return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+            return <MaterialCommunityIcons name={iconName} size={size} color={color}/>;
           },
           tabBarActiveTintColor: '#404040ff',
           tabBarInactiveTintColor: 'gray',
