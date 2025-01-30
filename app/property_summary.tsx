@@ -7,12 +7,14 @@ import {
   View, 
   FlatList, 
   Image, 
-  ActivityIndicator 
+  ActivityIndicator, 
+  TouchableOpacity
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
 import styles from '../styles/property_summaryStyle';
+import { router } from 'expo-router';
 
 export default function PropertySummaryPage() {
   const [properties, setProperties] = useState([]);
@@ -79,6 +81,14 @@ export default function PropertySummaryPage() {
           style={styles.logo}
         />
         <Text style={styles.titleText}>Property Summary</Text>
+        
+        {/* Custom Buttons */}
+        <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push('/settings_page')}
+          >
+            <Text style={styles.buttonText}>Settings</Text>
+          </TouchableOpacity>
 
         {/* loading */}
         {loading ? (
