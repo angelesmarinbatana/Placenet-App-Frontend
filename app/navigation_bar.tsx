@@ -2,6 +2,8 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image } from 'react-native'
+import styles from '../styles/navigation_barStyles';
 
 
 // Screens
@@ -32,8 +34,14 @@ function MainContainer() {
             let iconName;
             let rn = route.name;
 
+            // Use custom image for HomeScreen
             if (rn === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
+              return (
+                <Image
+                  source={focused ? require('../assets/placenet.png') : require('../assets/placenet.png')}
+                  style={styles.logo}
+                />
+              );
             }
             if (rn === projectName) {
               iconName = focused ? 'briefcase' : 'briefcase-outline';
