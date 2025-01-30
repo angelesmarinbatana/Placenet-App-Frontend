@@ -2,6 +2,10 @@ import React, {
   useState, 
   useEffect 
 } from 'react';
+import { 
+  SafeAreaProvider, 
+  SafeAreaView 
+} from 'react-native-safe-area-context';
 
 import {
   View,
@@ -138,78 +142,82 @@ const UploadFile = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Project Selection */}
-      <Text style={styles.title}>Select a Project:</Text>
-      <FlatList
-        data={projects}
-        keyExtractor={(item) => item.project_id.toString()}
-        horizontal
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.projectItem,
-              selectedProject?.project_id === item.project_id && styles.selectedProject,
-            ]}
-            onPress={() => handleSelectProject(item)}
-          >
-            <Text style={styles.projectText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Display Selected Project */}
-      {selectedProject && (
-        <Text style={styles.selectedProjectText}>
-          Selected Project: {selectedProject.name}
-        </Text>
-      )}
-
-      {/* Upload Button */}
-      <View style={styles.uploadButton}>
-        <Button title="Upload PDF" color="#1e90ff" onPress={pickDocument} />
-      </View>
-
-      {/* Display Selected Documents */}
-      <FlatList
-        data={selectedDocuments}
-        keyExtractor={(item, index) => item.uri + index}
-        renderItem={({ item, index }) => (
-          <View style={styles.documentItem}>
-            <Text style={styles.fileName}>Name: {item.name}</Text>
-            <TouchableOpacity onPress={() => handleDeleteDocument(index)}>
-              <Text style={styles.removeButton}>Remove</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-
-      {/* Upload Documents Button */}
-      {selectedDocuments.length > 0 && (
-        <TouchableOpacity style={styles.uploadDocumentsButton} onPress={uploadDocuments}>
-          <Text style={styles.uploadDocumentsText}>Upload Documents</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* List All Uploaded Documents */}
-      {selectedProject && (
-        <FlatList
-          data={documents}
-          keyExtractor={(item) => item.document_id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.documentItem}>
-              <Text style={styles.fileName}>Name: {item.file_name}</Text>
-              <TouchableOpacity onPress={() => handleDownloadDocument(item.document_id)}>
-                <Text style={styles.downloadButton}>Download</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
+          {/* Project Selection */}
+          <Text style={styles.title}>Select a Project:</Text>
+          <FlatList
+            data={projects}
+            keyExtractor={(item) => item.project_id.toString()}
+            horizontal
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[
+                  styles.projectItem,
+                  selectedProject?.project_id === item.project_id && styles.selectedProject,
+                ]}
+                onPress={() => handleSelectProject(item)}
+              >
+                <Text style={styles.projectText}>{item.name}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDeleteDocument(item.document_id)}>
-                <Text style={styles.removeButton}>Delete</Text>
-              </TouchableOpacity>
-            </View>
+            )}
+          />
+
+          {/* Display Selected Project */}
+          {selectedProject && (
+            <Text style={styles.selectedProjectText}>
+              Selected Project: {selectedProject.name}
+            </Text>
           )}
-        />
-      )}
-    </View>
+
+          {/* Upload Button */}
+          <View style={styles.uploadButton}>
+            <Button title="Upload PDF" color="#1e90ff" onPress={pickDocument} />
+          </View>
+
+          {/* Display Selected Documents */}
+          <FlatList
+            data={selectedDocuments}
+            keyExtractor={(item, index) => item.uri + index}
+            renderItem={({ item, index }) => (
+              <View style={styles.documentItem}>
+                <Text style={styles.fileName}>Name: {item.name}</Text>
+                <TouchableOpacity onPress={() => handleDeleteDocument(index)}>
+                  <Text style={styles.removeButton}>Remove</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+
+          {/* Upload Documents Button */}
+          {selectedDocuments.length > 0 && (
+            <TouchableOpacity style={styles.uploadDocumentsButton} onPress={uploadDocuments}>
+              <Text style={styles.uploadDocumentsText}>Upload Documents</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* List All Uploaded Documents */}
+          {selectedProject && (
+            <FlatList
+              data={documents}
+              keyExtractor={(item) => item.document_id.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.documentItem}>
+                  <Text style={styles.fileName}>Name: {item.file_name}</Text>
+                  <TouchableOpacity onPress={() => handleDownloadDocument(item.document_id)}>
+                    <Text style={styles.downloadButton}>Download</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleDeleteDocument(item.document_id)}>
+                    <Text style={styles.removeButton}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+          )}
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 export default UploadFile;

@@ -3,10 +3,13 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e8f4f8',
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: '#FFFFFF',
         padding: 20,
+      },
+      title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
       },
       label: {
         alignSelf: 'flex-start',
