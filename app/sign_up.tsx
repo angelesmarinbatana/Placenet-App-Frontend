@@ -1,66 +1,63 @@
 import { 
   SafeAreaProvider, 
   SafeAreaView 
-} from 'react-native-safe-area-context';
-
+} from "react-native-safe-area-context";
 import { 
   TextInput, 
   Text, 
   TouchableOpacity, 
   View, 
   Image, 
-  Alert 
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import React from 'react';
-import api from '../API/api';
-import styles from '../styles/sign_upStyles';
+  Alert } from "react-native";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword 
+  } from "firebase/auth";
+
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import styles from "../styles/sign_upStyles";
+import { auth } from "../config/firebaseConfig"; 
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [username, onChangeUsername] = React.useState('');
-  const [password, onChangePassword] = React.useState('');
-  const [confirmPassword, onChangeConfirmPassword] = React.useState('');
-  const [errorMessage, setErrorMessage] = React.useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-
-  //handle sign in 
   async function handleSignUp() {
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match!');
+      setErrorMessage("Passwords do not match!");
       return;
     }
 
     try {
-      const response = await api.post('/auth/register', { username, password });
-      
-      if (response.status === 201) {
-        //redirect to sign in + success message 
-        setErrorMessage('');
-        Alert.alert('Success', 'User created successfully! Please log in.', [
-          { text: 'OK', onPress: () => router.push('/sign_in') },
-        ]);
-      }
+      await createUserWithEmailAndPassword(auth, email, password);
+      Alert.alert("Success", "User created successfully! Please log in.", [
+        { text: "OK", onPress: () => router.push("/sign_in") },
+      ]);
     } catch (error) {
-      setErrorMessage('Registration failed! Please try again.');
+      setErrorMessage("Registration failed! Please try again.");
+      console.error("Firebase registration error:", error.message);
     }
   }
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Image source={require('../assets/placenet.png')} style={styles.logo} />
+        <Image source={require("../assets/placenet.png")} style={styles.logo} />
         <Text style={styles.titleText}>Create Your Account</Text>
         <TextInput
           style={styles.input}
-          onChangeText={onChangeUsername}
-          value={username}
-          placeholder="Username"
+          onChangeText={setEmail}
+          value={email}
+          placeholder="Email"
           placeholderTextColor="#A9A9A9"
         />
         <TextInput
           style={styles.input}
-          onChangeText={onChangePassword}
+          onChangeText={setPassword}
           value={password}
           placeholder="Password"
           placeholderTextColor="#A9A9A9"
@@ -68,25 +65,18 @@ export default function SignUpPage() {
         />
         <TextInput
           style={styles.input}
-          onChangeText={onChangeConfirmPassword}
+          onChangeText={setConfirmPassword}
           value={confirmPassword}
           placeholder="Confirm Password"
           placeholderTextColor="#A9A9A9"
           secureTextEntry
         />
+
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-        <View style={styles.signinContainer}>
-          <Text style={styles.signinText}>Already have an account?</Text>
-          <Text
-            style={styles.signinLink}
-            onPress={() => router.push('/sign_in')}
-          >
-            Sign In
-          </Text>
-        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
