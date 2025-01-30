@@ -93,7 +93,7 @@ export default function ListingSummariesPage() {
           source={require('../assets/placenet.png')}
           style={styles.logo}
         />
-        <Text style={styles.titleText}>Property Summary</Text>
+        <Text style={styles.titleText}>Social</Text>
 
         {/* Loading Indicator */}
         {loading ? (

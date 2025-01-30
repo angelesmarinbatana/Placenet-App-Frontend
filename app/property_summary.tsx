@@ -80,7 +80,7 @@ export default function PropertySummaryPage() {
           source={require('../assets/placenet.png')}
           style={styles.logo}
         />
-        <Text style={styles.titleText}>Property Summary</Text>
+        <Text style={styles.titleText}>Profile</Text>
         
         {/* Custom Buttons */}
         <TouchableOpacity
@@ -88,7 +88,7 @@ export default function PropertySummaryPage() {
             onPress={() => router.push('/settings_page')}
           >
             <Text style={styles.buttonText}>Settings</Text>
-          </TouchableOpacity>
+        </TouchableOpacity>
 
         {/* loading */}
         {loading ? (
