@@ -7,8 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const api = axios.create({
-    baseURL: 'http://10.190.185.65:3000/api', //home
-    //baseURL: 'http://10.222.82.59:3000/api',//school
+    baseURL: 'http://10.222.82.59:3000/api',//match backend
    timeout: 10000, //10 secs
 });
 
