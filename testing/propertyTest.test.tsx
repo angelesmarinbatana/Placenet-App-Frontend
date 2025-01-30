@@ -9,6 +9,11 @@ import PropertyManagement from '../app/property';
       data: { property_id: 999, name: '555 West St, Huston, TX, 90210' } 
     }))
   }));
+
+  jest.mock('react-native-safe-area-context', () => ({
+      SafeAreaView: ({ children }: { children: React.ReactNode }) => <>{children}</>, // Just render children without the SafeArea logic
+      SafeAreaProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    }));
   
   describe('PropertyManagement - resetFields', () => {
     it('resets form fields', async () => {
