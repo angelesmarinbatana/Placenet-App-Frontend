@@ -80,7 +80,7 @@ export default function PropertySummaryPage() {
           source={require('../assets/placenet.png')}
           style={styles.logo}
         />
-        <Text style={styles.titleText}>Profile</Text>
+        <Text style={styles.titleText}>Property Summary</Text>
         
         {/* Custom Buttons */}
         <TouchableOpacity

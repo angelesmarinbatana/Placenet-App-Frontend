@@ -24,7 +24,7 @@ export default function Settings() {
             style={styles.button}
             onPress={() => router.push('/sign_in')}
           >
-            <Text style={styles.buttonText}>Sign Out</Text>
+            <Text style={styles.buttonText}>Log out</Text>
           </TouchableOpacity>
         </SafeAreaView>
     </SafeAreaProvider>

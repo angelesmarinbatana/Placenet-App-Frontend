@@ -13,7 +13,7 @@ export default function RootLayout() {
       <Stack.Screen name="sign_in" options={{ title: 'Sign In', headerShown: false }} />
       <Stack.Screen name="sign_up" options={{ title: 'Sign Up', headerShown: false }} />
       <Stack.Screen name="listing_summaries" options={{ title: 'Social Project Summaries' }} />
-      <Stack.Screen name="navigation_bar" options={{ title: 'Navigation Bar', headerShown: false }} />
+      <Stack.Screen name="navigation_bar" options={{ title: 'Back', headerShown: false }} />
       <Stack.Screen name="settings_page" options={{ title: 'Settings' }} />
     </Stack>
   );

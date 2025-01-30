@@ -8,6 +8,20 @@ export default StyleSheet.create({
         alignItems: 'center',
         padding: 15,
       },
+      button: {
+        backgroundColor: '#404040ff',
+        borderRadius: 5,
+        height: 40,
+        width: '40%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+      },
+      buttonText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        textAlign: 'center',
+      },
       logo: {
         width: 200,
         height: 110,
