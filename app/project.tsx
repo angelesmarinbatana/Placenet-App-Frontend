@@ -2,6 +2,10 @@ import React, {
   useState, 
   useEffect 
 } from 'react';
+import { 
+  SafeAreaProvider, 
+  SafeAreaView 
+} from 'react-native-safe-area-context';
 
 import {
   View,
@@ -178,91 +182,95 @@ const ProjectManagement: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Select a Property:</Text>
-      <FlatList
-        data={properties}
-        keyExtractor={(item) => item.property_id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.propertyItem,
-              selectedProperty?.property_id === item.property_id && styles.selectedProperty,
-            ]}
-            onPress={() => handleSelectProperty(item)}
-          >
-            <Text style={styles.propertyText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
-
-      {selectedProperty && (
-        <>
-          <Text style={styles.subtitle}>Add or Update a Project for:</Text>
-          <Text style={styles.selectedPropertyName}>{selectedProperty.name}</Text>
-          
-          <Text style={styles.label}>Project Name:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Project Name"
-            value={projectName}
-            onChangeText={setProjectName}
-          />
-          <Text style={styles.label}>Project Description:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Project Description"
-            value={projectDescription}
-            onChangeText={setProjectDescription}
-            multiline
-          />
-
-          <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
-            <Text style={styles.datePickerText}>
-              {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
-            </Text>
-          </TouchableOpacity>
-
-          <DateTimePickerModal
-            isVisible={isDatePickerVisible}
-            mode="date"
-            onConfirm={handleDateChange}
-            onCancel={() => setDatePickerVisibility(false)}
-          />
-
-          <Button
-            title={editingProjectId ? "Update Project" : "Add Project"}
-            onPress={editingProjectId ? handleUpdateProject : handleAddProject}
-          />
-        </>
-      )}
-
-      {selectedProperty && projects.length > 0 && (
-        <View style={styles.projectListContainer}>
-          <Text style={styles.subtitle}>Projects for {selectedProperty.name}:</Text>
-          <FlatList
-            data={projects}
-            keyExtractor={(item) => item.project_id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.projectItem}>
-                <Text style={styles.projectText}>
-                  {item.name} - {new Date(item.completion_date).toDateString()}
-                </Text>
-                <Text style={styles.projectDescription}>{item.description}</Text>
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>
-                    <Text style={styles.buttonText}>Edit</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
+              <Text style={styles.title}>Select a Property:</Text>
+              <FlatList
+                data={properties}
+                keyExtractor={(item) => item.property_id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.propertyItem,
+                      selectedProperty?.property_id === item.property_id && styles.selectedProperty,
+                    ]}
+                    onPress={() => handleSelectProperty(item)}
+                  >
+                    <Text style={styles.propertyText}>{item.name}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.project_id)}>
-                    <Text style={styles.buttonText}>Delete</Text>
+                )}
+              />
+
+              {selectedProperty && (
+                <>
+                  <Text style={styles.subtitle}>Add or Update a Project for:</Text>
+                  <Text style={styles.selectedPropertyName}>{selectedProperty.name}</Text>
+                  
+                  <Text style={styles.label}>Project Name:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Project Name"
+                    value={projectName}
+                    onChangeText={setProjectName}
+                  />
+                  <Text style={styles.label}>Project Description:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Project Description"
+                    value={projectDescription}
+                    onChangeText={setProjectDescription}
+                    multiline
+                  />
+
+                  <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
+                    <Text style={styles.datePickerText}>
+                      {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
+                    </Text>
                   </TouchableOpacity>
+
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={handleDateChange}
+                    onCancel={() => setDatePickerVisibility(false)}
+                  />
+
+                  <Button
+                    title={editingProjectId ? "Update Project" : "Add Project"}
+                    onPress={editingProjectId ? handleUpdateProject : handleAddProject}
+                  />
+                </>
+              )}
+
+              {selectedProperty && projects.length > 0 && (
+                <View style={styles.projectListContainer}>
+                  <Text style={styles.subtitle}>Projects for {selectedProperty.name}:</Text>
+                  <FlatList
+                    data={projects}
+                    keyExtractor={(item) => item.project_id.toString()}
+                    renderItem={({ item }) => (
+                      <View style={styles.projectItem}>
+                        <Text style={styles.projectText}>
+                          {item.name} - {new Date(item.completion_date).toDateString()}
+                        </Text>
+                        <Text style={styles.projectDescription}>{item.description}</Text>
+                        <View style={styles.buttonContainer}>
+                          <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>
+                            <Text style={styles.buttonText}>Edit</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.project_id)}>
+                            <Text style={styles.buttonText}>Delete</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    )}
+                  />
                 </View>
-              </View>
-            )}
-          />
+              )}
         </View>
-      )}
-    </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 export default ProjectManagement;

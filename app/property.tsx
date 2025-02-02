@@ -2,6 +2,11 @@ import React, {
   useState,
    useEffect 
 } from 'react';
+import { 
+  SafeAreaProvider, 
+  SafeAreaView 
+} from 'react-native-safe-area-context';
+
 
 import { 
   View, 
@@ -114,7 +119,10 @@ const PropertyManagement: React.FC = () => {
   };
 
   return (
+    <SafeAreaProvider>
+          <SafeAreaView style={styles.container}>
     <View style={styles.container}>
+      <Text style={styles.title}>Enter a Property:</Text>
       {/* input fields for adding/editing properties */}
       <Text style={styles.label}>Street:</Text>
       <TextInput
@@ -181,6 +189,8 @@ const PropertyManagement: React.FC = () => {
         </View>
       )}
     </View>
+    </SafeAreaView>
+        </SafeAreaProvider>
   );
 };
 
