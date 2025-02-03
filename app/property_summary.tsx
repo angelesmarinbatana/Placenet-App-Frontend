@@ -9,60 +9,54 @@ import {
   Image, 
   ActivityIndicator 
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import api from '../API/api';
-import * as SecureStore from 'expo-secure-store';
-import styles from '../styles/property_summaryStyle';
+import React, { useEffect, useState } from "react";
+import { db, auth } from "../config/firebaseConfig";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import styles from "../styles/property_summaryStyle";
+
 
 export default function PropertySummaryPage() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    //get summary
-    async function fetchProfileSummary() {
+    async function fetchPropertySummary() {
       try {
-        const token = await SecureStore.getItemAsync('userToken');
-        if (!token) {
-          setErrorMessage('Authentication failed! Please log in again.');
-          return;
-        }
-
-        const response = await api.get('/summary', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setProperties(response.data.Properties);
+        const propertyQuery = query(
+          collection(db, "properties"),
+          where("userId", "==", auth.currentUser.uid)
+        );
+        const querySnapshot = await getDocs(propertyQuery);
+        const propertyList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProperties(propertyList);
         setLoading(false);
       } catch (error) {
-        //console.error('Error fetching property summary:', error); //debug
-        setErrorMessage('Failed to load property summary. Please try again later.');
+        setErrorMessage("Failed to load property summary.");
         setLoading(false);
       }
     }
-
-    fetchProfileSummary();
+    fetchPropertySummary();
   }, []);
 
-  //render prop items
   const renderProperty = ({ item }) => (
     <View style={styles.propertyContainer}>
       <Text style={styles.propertyName}>{item.name}</Text>
 
-      {/* projects */}
+      {/* Projects Section */}
       <Text style={styles.sectionTitle}>Projects:</Text>
-      {item.Projects && item.Projects.map((project) => (
-        <View key={project.project_id}>
+      {item.projects && item.projects.map((project) => (
+        <View key={project.id}>
           <Text style={styles.itemText}>- {project.name}</Text>
 
-          {/* documents */}
+          {/* Documents Section */}
           <Text style={styles.sectionTitle}>Documents:</Text>
-          {project.Documents && project.Documents.map((document) => (
-            <Text key={document.document_id} style={styles.itemText}>
-              - {document.file_name}
+          {project.documents && project.documents.map((document) => (
+            <Text key={document.id} style={styles.itemText}>
+              - {document.fileName}
             </Text>
           ))}
         </View>
@@ -74,24 +68,21 @@ export default function PropertySummaryPage() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         {/* Header */}
-        <Image
-          source={require('../assets/placenet.png')}
-          style={styles.logo}
-        />
+        <Image source={require("../assets/placenet.png")} style={styles.logo} />
         <Text style={styles.titleText}>Property Summary</Text>
 
-        {/* loading */}
+        {/* Loading Indicator */}
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            {/* error */}
+            {/* Error Message */}
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-            {/* property list */}
+            {/* Property List */}
             <FlatList
               data={properties}
-              keyExtractor={(item) => item.property_id.toString()}
+              keyExtractor={(item) => item.id}
               renderItem={renderProperty}
               contentContainerStyle={styles.listContainer}
             />

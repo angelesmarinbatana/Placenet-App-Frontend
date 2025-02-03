@@ -1,23 +1,20 @@
-import { 
-  SafeAreaProvider, 
-  SafeAreaView 
+import {
+  SafeAreaProvider,
+  SafeAreaView
 } from "react-native-safe-area-context";
-import { 
-  TextInput, 
-  Text, 
-  TouchableOpacity, 
-  View, 
-  Image, 
-  Alert } from "react-native";
-  import { 
-    getAuth, 
-    createUserWithEmailAndPassword 
-  } from "firebase/auth";
-
+import {
+  TextInput,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert
+} from "react-native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import styles from "../styles/sign_upStyles";
+import { createUserWithEmailAndPassword } from "firebase/auth"; 
 import { auth } from "../config/firebaseConfig"; 
+import styles from "../styles/sign_upStyles";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -34,12 +31,12 @@ export default function SignUpPage() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      Alert.alert("Success", "User created successfully! Please log in.", [
+      Alert.alert("Success", "Account Created! Please Log In.", [
         { text: "OK", onPress: () => router.push("/sign_in") },
       ]);
     } catch (error) {
       setErrorMessage("Registration failed! Please try again.");
-      console.error("Firebase registration error:", error.message);
+      //console.error("Firebase registration error:", error.message); //debug
     }
   }
 
@@ -48,28 +45,28 @@ export default function SignUpPage() {
       <SafeAreaView style={styles.container}>
         <Image source={require("../assets/placenet.png")} style={styles.logo} />
         <Text style={styles.titleText}>Create Your Account</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setEmail}
-          value={email}
-          placeholder="Email"
-          placeholderTextColor="#A9A9A9"
+
+        <TextInput 
+          style={styles.input} 
+          onChangeText={setEmail} 
+          value={email} 
+          placeholder="Email" 
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
-        <TextInput
-          style={styles.input}
-          onChangeText={setPassword}
-          value={password}
-          placeholder="Password"
-          placeholderTextColor="#A9A9A9"
-          secureTextEntry
+        <TextInput 
+          style={styles.input} 
+          onChangeText={setPassword} 
+          value={password} 
+          placeholder="Password" 
+          secureTextEntry 
         />
-        <TextInput
-          style={styles.input}
-          onChangeText={setConfirmPassword}
-          value={confirmPassword}
-          placeholder="Confirm Password"
-          placeholderTextColor="#A9A9A9"
-          secureTextEntry
+        <TextInput 
+          style={styles.input} 
+          onChangeText={setConfirmPassword} 
+          value={confirmPassword} 
+          placeholder="Confirm Password" 
+          secureTextEntry 
         />
 
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}

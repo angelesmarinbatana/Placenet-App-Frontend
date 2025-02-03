@@ -15,9 +15,9 @@ import React, {
   useEffect, 
   useState 
 } from 'react';
-import api from '../API/api';
-import * as SecureStore from 'expo-secure-store';
-import styles from '../styles/listing_summariesStyles';
+import { db } from "../config/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+import styles from "../styles/listing_summariesStyles";
 
 export default function ListingSummariesPage() {
   const [properties, setProperties] = useState([]);
@@ -25,59 +25,35 @@ export default function ListingSummariesPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    //get summary
-    async function fetchProfileSummary() {
+    async function fetchListings() {
       try {
-        const token = await SecureStore.getItemAsync('userToken');
-        if (!token) {
-          setErrorMessage('Authentication failed! Please log in again.');
-          return;
-        }
-
-        const response = await api.get('/listings');
-        var properties: { [id: string] : Array<T>; } = {}
-        var i = 1;
-        properties["Properties"] = response.data[0].Properties;
-
-        while(i != response.data.length){
-          for(var j in response.data[i].Properties) 
-            properties["Properties"].push(response.data[i].Properties[j]);
-          i++;
-        }
-       // console.log(properties); //debug
-        
-        
-        //console.log(response.data); //debug 
-        //console.log(properties["Properties"]); //debug 
-        //console.log(properties.Properties);  //debug
-        setProperties(properties.Properties);
+        const querySnapshot = await getDocs(collection(db, "properties"));
+        const propertyList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setProperties(propertyList);
         setLoading(false);
       } catch (error) {
-        //console.error('Error fetching property summary:', error); //debug
-        setErrorMessage('Failed to load property summary. Please try again later.');
+        setErrorMessage("Failed to load property summaries.");
         setLoading(false);
       }
     }
-
-    fetchProfileSummary();
+    fetchListings();
   }, []);
 
-  //render prop items
   const renderProperty = ({ item }) => (
     <View style={styles.propertyContainer}>
       <Text style={styles.propertyName}>{item.name}</Text>
 
       {/* Projects Section */}
       <Text style={styles.sectionTitle}>Projects:</Text>
-      {item.Projects && item.Projects.map((project) => (
-        <View key={project.project_id}>
+      {item.projects && item.projects.map((project) => (
+        <View key={project.id}>
           <Text style={styles.itemText}>- {project.name}</Text>
 
           {/* Documents Section */}
           <Text style={styles.sectionTitle}>Documents:</Text>
-          {project.Documents && project.Documents.map((document) => (
-            <Text key={document.document_id} style={styles.itemText}>
-              - {document.file_name}
+          {project.documents && project.documents.map((document) => (
+            <Text key={document.id} style={styles.itemText}>
+              - {document.fileName}
             </Text>
           ))}
         </View>
@@ -89,11 +65,8 @@ export default function ListingSummariesPage() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         {/* Header */}
-        <Image
-          source={require('../assets/placenet.png')}
-          style={styles.logo}
-        />
-        <Text style={styles.titleText}>Property Summary</Text>
+        <Image source={require("../assets/placenet.png")} style={styles.logo} />
+        <Text style={styles.titleText}>Community Property Summaries</Text>
 
         {/* Loading Indicator */}
         {loading ? (
@@ -106,7 +79,7 @@ export default function ListingSummariesPage() {
             {/* Property List */}
             <FlatList
               data={properties}
-              keyExtractor={(item) => item.property_id.toString()}
+              keyExtractor={(item) => item.id}
               renderItem={renderProperty}
               contentContainerStyle={styles.listContainer}
             />
