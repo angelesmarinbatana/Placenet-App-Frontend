@@ -1,59 +1,51 @@
-import React, { 
-  useState,
-   useEffect 
-} from 'react';
-
-import { 
-  View, 
-  TextInput, 
-  Button, 
-  Alert, 
-  FlatList, 
-  Text, 
-  TouchableOpacity 
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Button, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
 import { db, auth } from "../config/firebaseConfig";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc
-} from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import styles from "../styles/propertyStyles";
 
 const PropertyManagement = () => {
-  const [propertyName, setPropertyName] = useState("");
-  const [properties, setProperties] = useState([]);
-  const [editingId, setEditingId] = useState(null);
+  const [street, setStreet] = useState<string>('');
+  const [city, setCity] = useState<string>('');
+  const [state, setState] = useState<string>('');
+  const [zip, setZip] = useState<string>('');
+  const [properties, setProperties] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
+  // Fetch properties from Firestore
   useEffect(() => {
     fetchProperties();
   }, []);
 
-  async function fetchProperties() {
-    const querySnapshot = await getDocs(collection(db, "properties"));
-    const propertyList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setProperties(propertyList);
-  }
+  const fetchProperties = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "properties"));
+      const propertyList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProperties(propertyList);
+    } catch (error) {
+      Alert.alert("Error!", "Failed to fetch properties.");
+    }
+  };
 
+  // Add a new property
   const handleAddProperty = async () => {
-    if (!propertyName.trim()) {
-      Alert.alert("Error!", "Property name is required.");
+    if (!street.trim() || !city.trim() || !state.trim() || !zip.trim()) {
+      Alert.alert("Error!", "All address fields must be filled out.");
       return;
     }
 
     try {
       const newProperty = await addDoc(collection(db, "properties"), {
-        name: propertyName,
-        userId: auth.currentUser.uid,
+        street,
+        city,
+        state,
+        zip,
+        userId: auth.currentUser?.uid,
       });
-
-      setProperties([...properties, { id: newProperty.id, name: propertyName }]);
+      setProperties([...properties, { id: newProperty.id, street, city, state, zip }]);
       Alert.alert("Success!", "Property added.");
       resetForm();
     } catch (error) {
@@ -61,22 +53,21 @@ const PropertyManagement = () => {
     }
   };
 
+  // Update an existing property
   const handleUpdateProperty = async () => {
-    if (!editingId || !propertyName.trim()) {
-      Alert.alert("Error!", "Property name is required.");
+    if (!editingId || !street.trim() || !city.trim() || !state.trim() || !zip.trim()) {
+      Alert.alert("Error!", "All address fields must be filled out.");
       return;
     }
 
     try {
       const propertyRef = doc(db, "properties", editingId);
-      await updateDoc(propertyRef, { name: propertyName });
-
+      await updateDoc(propertyRef, { street, city, state, zip });
       setProperties((prev) =>
         prev.map((prop) =>
-          prop.id === editingId ? { ...prop, name: propertyName } : prop
+          prop.id === editingId ? { ...prop, street, city, state, zip } : prop
         )
       );
-
       Alert.alert("Success!", "Property updated.");
       resetForm();
     } catch (error) {
@@ -84,7 +75,8 @@ const PropertyManagement = () => {
     }
   };
 
-  const handleDeleteProperty = async (propertyId) => {
+  // Delete a property
+  const handleDeleteProperty = async (propertyId: string) => {
     try {
       await deleteDoc(doc(db, "properties", propertyId));
       setProperties((prev) => prev.filter((prop) => prop.id !== propertyId));
@@ -94,24 +86,54 @@ const PropertyManagement = () => {
     }
   };
 
-  const handleEditProperty = (property) => {
-    setPropertyName(property.name);
+  // Edit an existing property
+  const handleEditProperty = (property: any) => {
+    setStreet(property.street);
+    setCity(property.city);
+    setState(property.state);
+    setZip(property.zip);
     setEditingId(property.id);
   };
 
+  // Reset the form
   const resetForm = () => {
-    setPropertyName("");
+    setStreet('');
+    setCity('');
+    setState('');
+    setZip('');
     setEditingId(null);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Property Name:</Text>
+      <Text style={styles.label}>Street:</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter Property Name"
-        value={propertyName}
-        onChangeText={setPropertyName}
+        placeholder="Enter Street"
+        value={street}
+        onChangeText={setStreet}
+      />
+      <Text style={styles.label}>City:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter City"
+        value={city}
+        onChangeText={setCity}
+      />
+      <Text style={styles.label}>State:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter State"
+        value={state}
+        onChangeText={setState}
+      />
+      <Text style={styles.label}>Zip Code:</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Zip Code"
+        value={zip}
+        onChangeText={setZip}
+        keyboardType="numeric"
       />
 
       <Button
@@ -127,7 +149,9 @@ const PropertyManagement = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.propertyItemContainer}>
-                <Text style={styles.propertyItem}>{item.name}</Text>
+                <Text style={styles.propertyItem}>
+                  {item.street}, {item.city}, {item.state}, {item.zip}
+                </Text>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity onPress={() => handleEditProperty(item)} style={styles.editButton}>
                     <Text style={styles.buttonText}>Edit</Text>
