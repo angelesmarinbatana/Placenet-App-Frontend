@@ -148,7 +148,7 @@ const ProjectManagement = () => {
             ]}
             onPress={() => handleSelectProperty(item)}
           >
-            <Text style={styles.propertyText}>{item.name}</Text>
+            <Text style={styles.propertyText}>{item.street}</Text>
           </TouchableOpacity>
         )}
       />
@@ -156,7 +156,7 @@ const ProjectManagement = () => {
       {selectedProperty && (
         <>
           <Text style={styles.subtitle}>Manage Projects for:</Text>
-          <Text style={styles.selectedPropertyName}>{selectedProperty.name}</Text>
+          <Text style={styles.selectedPropertyName}>{selectedProperty.street}</Text>
 
           <Text style={styles.label}>Project Name:</Text>
           <TextInput
