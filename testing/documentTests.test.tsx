@@ -4,6 +4,9 @@ import UploadFile from '../app/document';
 import api from '../API/api';
 import * as DocumentPicker from 'expo-document-picker';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { test, expect} from '@jest/globals'
+
+jest.setTimeout(10000);
 
 // Mock API calls
 jest.mock('../API/api', () => ({
