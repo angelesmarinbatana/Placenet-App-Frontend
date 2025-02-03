@@ -7,14 +7,13 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image,
-  Alert
+  Image
 } from "react-native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { signInWithEmailAndPassword } from "firebase/auth"; 
-import { auth } from "../config/firebaseConfig"; 
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebaseConfig";
 import styles from "../styles/sign_inStyles";
 
 export default function LoginPage() {
@@ -26,14 +25,12 @@ export default function LoginPage() {
   async function handleSignIn() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken(); // tb token
+      const token = await userCredential.user.getIdToken(); 
 
       await SecureStore.setItemAsync("userToken", token);
-      //console.log("Firebase token stored:", token); //debug
       router.push("/main");
     } catch (error) {
       setErrorMessage("Invalid Credentials! Try Again.");
-      //console.error("Firebase login error:", error.message); //debug
     }
   }
 
@@ -48,7 +45,8 @@ export default function LoginPage() {
           style={styles.input} 
           onChangeText={setEmail} 
           value={email} 
-          placeholder="Email" 
+          placeholder="Email"
+          placeholderTextColor="gray" 
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -57,6 +55,7 @@ export default function LoginPage() {
           onChangeText={setPassword} 
           value={password} 
           placeholder="Password" 
+          placeholderTextColor="gray"
           secureTextEntry 
         />
 

@@ -12,8 +12,8 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth"; 
-import { auth } from "../config/firebaseConfig"; 
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebaseConfig";
 import styles from "../styles/sign_upStyles";
 
 export default function SignUpPage() {
@@ -31,12 +31,10 @@ export default function SignUpPage() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      Alert.alert("Success", "Account Created! Please Log In.", [
-        { text: "OK", onPress: () => router.push("/sign_in") },
-      ]);
+      Alert.alert("Success", "Account Created! Please Log In.", [{ text: "OK", onPress: () => router.push("/sign_in") }]);
     } catch (error) {
-      setErrorMessage("Registration failed! Please try again.");
-      //console.error("Firebase registration error:", error.message); //debug
+      setErrorMessage("Failed to create account.");
+      console.log("error", error)
     }
   }
 
@@ -45,12 +43,14 @@ export default function SignUpPage() {
       <SafeAreaView style={styles.container}>
         <Image source={require("../assets/placenet.png")} style={styles.logo} />
         <Text style={styles.titleText}>Create Your Account</Text>
+        <Text style={styles.subText}>Password should be at least 6 characters</Text>
 
         <TextInput 
           style={styles.input} 
           onChangeText={setEmail} 
           value={email} 
           placeholder="Email" 
+          placeholderTextColor="gray" 
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -58,7 +58,8 @@ export default function SignUpPage() {
           style={styles.input} 
           onChangeText={setPassword} 
           value={password} 
-          placeholder="Password" 
+          placeholder="Password"
+          placeholderTextColor="gray" 
           secureTextEntry 
         />
         <TextInput 
@@ -66,6 +67,7 @@ export default function SignUpPage() {
           onChangeText={setConfirmPassword} 
           value={confirmPassword} 
           placeholder="Confirm Password" 
+          placeholderTextColor="gray" 
           secureTextEntry 
         />
 
