@@ -1,8 +1,4 @@
-import React, { 
-  useState, 
-  useEffect 
-} from 'react';
-
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -21,6 +17,7 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import styles from "../styles/projectStyles";
 
 const ProjectManagement = () => {
@@ -30,6 +27,8 @@ const ProjectManagement = () => {
   const [projectDescription, setProjectDescription] = useState("");
   const [projects, setProjects] = useState([]);
   const [editingProjectId, setEditingProjectId] = useState(null);
+  const [completionDate, setCompletionDate] = useState<Date | null>(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState<boolean>(false);
 
   useEffect(() => {
     fetchProperties();
@@ -59,8 +58,8 @@ const ProjectManagement = () => {
   };
 
   const handleAddProject = async () => {
-    if (!selectedProperty || !projectName.trim() || !projectDescription.trim()) {
-      Alert.alert("Error", "Please fill out all fields.");
+    if (!selectedProperty || !projectName.trim() || !projectDescription.trim() || !completionDate) {
+      Alert.alert("Error", "Please fill out all fields, including completion date.");
       return;
     }
 
@@ -70,9 +69,10 @@ const ProjectManagement = () => {
         description: projectDescription,
         propertyId: selectedProperty.id,
         userId: auth.currentUser.uid,
+        completionDate: completionDate.toISOString(), // store the date as ISO string
       });
 
-      setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription }]);
+      setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription, completionDate: completionDate }]);
       Alert.alert("Success!", "Project added.");
       resetForm();
     } catch (error) {
@@ -81,18 +81,18 @@ const ProjectManagement = () => {
   };
 
   const handleUpdateProject = async () => {
-    if (!editingProjectId || !selectedProperty || !projectName.trim() || !projectDescription.trim()) {
-      Alert.alert("Error", "Please fill out all fields.");
+    if (!editingProjectId || !selectedProperty || !projectName.trim() || !projectDescription.trim() || !completionDate) {
+      Alert.alert("Error", "Please fill out all fields, including completion date.");
       return;
     }
 
     try {
       const projectRef = doc(db, "projects", editingProjectId);
-      await updateDoc(projectRef, { name: projectName, description: projectDescription });
+      await updateDoc(projectRef, { name: projectName, description: projectDescription, completionDate: completionDate.toISOString() });
 
       setProjects((prev) =>
         prev.map((proj) =>
-          proj.id === editingProjectId ? { ...proj, name: projectName, description: projectDescription } : proj
+          proj.id === editingProjectId ? { ...proj, name: projectName, description: projectDescription, completionDate } : proj
         )
       );
 
@@ -116,13 +116,22 @@ const ProjectManagement = () => {
   const handleEditProject = (project) => {
     setProjectName(project.name);
     setProjectDescription(project.description);
+    setCompletionDate(new Date(project.completionDate)); // Set the existing date
     setEditingProjectId(project.id);
   };
 
   const resetForm = () => {
     setProjectName("");
     setProjectDescription("");
+    setCompletionDate(null);
     setEditingProjectId(null);
+  };
+
+  const handleDateChange = (selectedDate?: Date) => {
+    setDatePickerVisibility(false);
+    if (selectedDate) {
+      setCompletionDate(selectedDate);
+    }
   };
 
   return (
@@ -150,17 +159,42 @@ const ProjectManagement = () => {
           <Text style={styles.selectedPropertyName}>{selectedProperty.name}</Text>
 
           <Text style={styles.label}>Project Name:</Text>
-          <TextInput style={styles.input} placeholder="Project Name" value={projectName} onChangeText={setProjectName} />
+          <TextInput
+            style={styles.input}
+            placeholder="Project Name"
+            placeholderTextColor="gray"
+            value={projectName}
+            onChangeText={setProjectName}
+          />
           <Text style={styles.label}>Project Description:</Text>
           <TextInput
             style={styles.input}
             placeholder="Project Description"
+            placeholderTextColor="gray"
             value={projectDescription}
             onChangeText={setProjectDescription}
             multiline
           />
 
-          <Button title={editingProjectId ? "Update Project" : "Add Project"} onPress={editingProjectId ? handleUpdateProject : handleAddProject} />
+          {/* Date Picker Button */}
+          <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
+            <Text style={styles.datePickerText}>
+              {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Date Picker Modal */}
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleDateChange}
+            onCancel={() => setDatePickerVisibility(false)}
+          />
+
+          <Button
+            title={editingProjectId ? "Update Project" : "Add Project"}
+            onPress={editingProjectId ? handleUpdateProject : handleAddProject}
+          />
         </>
       )}
 
@@ -172,7 +206,9 @@ const ProjectManagement = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.projectItem}>
-                <Text style={styles.projectText}>{item.name}</Text>
+                <Text style={styles.projectText}>
+                  {item.name} - {new Date(item.completionDate).toDateString()}
+                </Text>
                 <Text style={styles.projectDescription}>{item.description}</Text>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>

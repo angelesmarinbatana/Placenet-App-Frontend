@@ -110,6 +110,7 @@ const PropertyManagement = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter Street"
+        placeholderTextColor="gray" 
         value={street}
         onChangeText={setStreet}
       />
@@ -117,6 +118,7 @@ const PropertyManagement = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter City"
+        placeholderTextColor="gray" 
         value={city}
         onChangeText={setCity}
       />
@@ -124,6 +126,7 @@ const PropertyManagement = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter State"
+        placeholderTextColor="gray" 
         value={state}
         onChangeText={setState}
       />
@@ -131,6 +134,7 @@ const PropertyManagement = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter Zip Code"
+        placeholderTextColor="gray" 
         value={zip}
         onChangeText={setZip}
         keyboardType="numeric"
