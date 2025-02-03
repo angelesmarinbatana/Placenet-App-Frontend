@@ -18,13 +18,14 @@
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
-    "@react-navigation/bottom-tabs": "^7.0.0",
+    "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.0",
     "axios": "^1.7.7",
     "cocoapods": "^0.0.0",
     "eas": "^0.1.0",
     "expo": "~52.0.28",
     "expo-constants": "~17.0.3",
+    "expo-dev-client": "~5.0.11",
     "expo-document-picker": "~13.0.2",
     "expo-font": "~13.0.1",
     "expo-linking": "~7.0.5",
@@ -47,8 +48,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.10",
-    "react-native-webview": "13.12.5",
-    "expo-dev-client": "~5.0.11"
+    "react-native-webview": "13.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
