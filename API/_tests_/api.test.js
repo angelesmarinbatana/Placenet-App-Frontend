@@ -11,7 +11,8 @@ jest.mock('axios', () => {
         interceptors: {
             request: {
                 use: jest.fn((onFulfilled) => {
-                    mockAxios.requestInterceptor = onFulfilled;  
+                    mockAxios.requestInterceptor = onFulfilled; 
+                     
                 }),
             },
             response: {
