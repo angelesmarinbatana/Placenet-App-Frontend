@@ -38,11 +38,13 @@ jest.mock('react-native-safe-area-context', () => ({
 
 describe('LoginPage Component', () => {
   let pushMock: jest.Mock;
+  let mockAuth: any;
 
   beforeEach(() => {
     pushMock = jest.fn();
     (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
-    jest.clearAllMocks();
+    mockAuth = require('@react-native-firebase/auth')();
+    jest.clearAllMocks()
   });
 
   test('renders LoginPage with inputs and buttons', () => {

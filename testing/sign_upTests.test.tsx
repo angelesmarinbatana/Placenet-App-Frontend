@@ -3,6 +3,7 @@ import { render, fireEvent, screen, waitFor } from '@testing-library/react-nativ
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SignUpPage from '../app/sign_up'; // Adjust the import path if necessary
 import { Alert } from 'react-native';
+import '@testing-library/jest-native/extend-expect';
 
 
 jest.mock('@react-native-firebase/auth', () => () => ({
@@ -43,9 +44,11 @@ jest.mock('react-native-safe-area-context', () => ({
 
 describe('SignUpPage', () => {
   let pushMock: jest.Mock<any, any, any>;
+  let mockAuth: any;
 
   beforeEach(() => {
     pushMock = jest.fn();
+    mockAuth = require('@react-native-firebase/auth')();
   });
 
   test('renders correctly', () => {
@@ -72,5 +75,6 @@ describe('SignUpPage', () => {
     fireEvent.press(screen.getByText('Sign Up'));
 
     await waitFor(() => expect(screen.getByText('Passwords do not match!')).toBeTruthy());
+    
   });
 });
