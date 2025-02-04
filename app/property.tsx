@@ -3,6 +3,8 @@ import { View, TextInput, Button, Alert, FlatList, Text, TouchableOpacity } from
 import { db, auth } from "../config/firebaseConfig";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import styles from "../styles/propertyStyles";
+import "regenerator-runtime/runtime";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const PropertyManagement = () => {
   const [street, setStreet] = useState<string>('');

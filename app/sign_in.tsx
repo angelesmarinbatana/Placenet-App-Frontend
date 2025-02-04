@@ -28,7 +28,7 @@ export default function LoginPage() {
       const token = await userCredential.user.getIdToken(); 
 
       await SecureStore.setItemAsync("userToken", token);
-      router.push("/main");
+      router.push("/navigation_bar");
     } catch (error) {
       setErrorMessage("Invalid Credentials! Try Again.");
     }
