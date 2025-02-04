@@ -19,6 +19,11 @@ export default StyleSheet.create({
         color: '#000',
         marginBottom: 20,
       },
+      subText: {
+        fontSize: 15,
+        color: '#000',
+        marginBottom: 20,
+      },
       input: {
         backgroundColor: '#F0F0F0',
         borderColor: '#C0C0C0',

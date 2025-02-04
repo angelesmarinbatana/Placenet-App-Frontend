@@ -15,9 +15,9 @@ import React, {
   useEffect, 
   useState 
 } from 'react';
-import api from '../API/api';
-import * as SecureStore from 'expo-secure-store';
-import styles from '../styles/listing_summariesStyles';
+import { db } from "../config/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+import styles from "../styles/listing_summariesStyles";
 
 export default function ListingSummariesPage() {
   const [properties, setProperties] = useState([]);
@@ -25,88 +25,92 @@ export default function ListingSummariesPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    //get summary
-    async function fetchProfileSummary() {
+    async function fetchListings() {
       try {
-        const token = await SecureStore.getItemAsync('userToken');
-        if (!token) {
-          setErrorMessage('Authentication failed! Please log in again.');
-          return;
-        }
-
-        const response = await api.get('/listings');
-        var properties: { [id: string] : Array<T>; } = {}
-        var i = 1;
-        properties["Properties"] = response.data[0].Properties;
-
-        while(i != response.data.length){
-          for(var j in response.data[i].Properties) 
-            properties["Properties"].push(response.data[i].Properties[j]);
-          i++;
-        }
-       // console.log(properties); //debug
-        
-        
-        //console.log(response.data); //debug 
-        //console.log(properties["Properties"]); //debug 
-        //console.log(properties.Properties);  //debug
-        setProperties(properties.Properties);
-        setLoading(false);
+        const querySnapshot = await getDocs(collection(db, "properties"));
+    
+        const propertyList = await Promise.all(
+          querySnapshot.docs.map(async (docSnapshot) => {
+            const propertyData = docSnapshot.data(); 
+    
+            const projectsRef = collection(db, "properties", docSnapshot.id, "projects");
+            const projectsSnapshot = await getDocs(projectsRef);
+    
+            const projects = projectsSnapshot.docs.map((projDoc) => ({
+              id: projDoc.id,
+              ...projDoc.data(),
+            }));
+    
+            console.log(`Projects for ${docSnapshot.id}:`, projects);
+    
+            return { id: docSnapshot.id, ...propertyData, projects };
+          })
+        );
+    
+        console.log("Final Properties List:", propertyList); 
+        setProperties(propertyList); 
       } catch (error) {
-        //console.error('Error fetching property summary:', error); //debug
-        setErrorMessage('Failed to load property summary. Please try again later.');
+        console.error("Error fetching properties:", error);
+        setErrorMessage("Failed to load property summaries.");
+      } finally {
         setLoading(false);
       }
     }
-
-    fetchProfileSummary();
+    fetchListings();
   }, []);
 
-  //render prop items
-  const renderProperty = ({ item }) => (
-    <View style={styles.propertyContainer}>
-      <Text style={styles.propertyName}>{item.name}</Text>
-
-      {/* Projects Section */}
-      <Text style={styles.sectionTitle}>Projects:</Text>
-      {item.Projects && item.Projects.map((project) => (
-        <View key={project.project_id}>
-          <Text style={styles.itemText}>- {project.name}</Text>
-
-          {/* Documents Section */}
-          <Text style={styles.sectionTitle}>Documents:</Text>
-          {project.Documents && project.Documents.map((document) => (
-            <Text key={document.document_id} style={styles.itemText}>
-              - {document.file_name}
-            </Text>
-          ))}
-        </View>
-      ))}
-    </View>
-  );
-
+  const renderProperty = ({ item }) => {
+    if (!item) {
+      console.log("Error: item is undefined in renderProperty!");
+      return null; 
+    }
+  
+    console.log("Rendering Property:", item); 
+    console.log("Projects:", item.projects);
+  
+    return (
+      <View style={styles.propertyContainer}>
+        <Text style={styles.propertyName}>{item.street}</Text>
+  
+        <Text style={styles.sectionTitle}>Projects:</Text>
+        {item.projects?.length > 0 ? (
+          item.projects.map((project) => (
+            <View key={project.id}>
+              <Text style={styles.itemText}>- {project.name}</Text>
+  
+              <Text style={styles.sectionTitle}>Documents:</Text>
+              {project.documents?.length > 0 ? (
+                project.documents.map((document) => (
+                  <Text key={document.id} style={styles.itemText}>
+                    - {document.fileName}
+                  </Text>
+                ))
+              ) : (
+                <Text style={styles.itemText}>No documents found.</Text>
+              )}
+            </View>
+          ))
+        ) : (
+          <Text style={styles.itemText}>No projects found.</Text>
+        )}
+      </View>
+    );
+  };
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        {/* Header */}
-        <Image
-          source={require('../assets/placenet.png')}
-          style={styles.logo}
-        />
-        <Text style={styles.titleText}>Social</Text>
+        <Image source={require("../assets/placenet.png")} style={styles.logo} />
+        <Text style={styles.titleText}>Community Property Summaries</Text>
 
-        {/* Loading Indicator */}
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            {/* Error Message */}
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-            {/* Property List */}
             <FlatList
               data={properties}
-              keyExtractor={(item) => item.property_id.toString()}
+              keyExtractor={(item) => item.id}
               renderItem={renderProperty}
               contentContainerStyle={styles.listContainer}
             />

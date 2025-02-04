@@ -1,12 +1,4 @@
-import React, { 
-  useState, 
-  useEffect 
-} from 'react';
-import { 
-  SafeAreaProvider, 
-  SafeAreaView 
-} from 'react-native-safe-area-context';
-
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -16,160 +8,121 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import api from '../API/api';
+import { db, auth } from "../config/firebaseConfig";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from '../styles/projectStyles';
+import styles from "../styles/projectStyles";
 
-interface Property {
-  property_id: number;
-  name: string;
-}
-
-interface Project {
-  project_id: number;
-  name: string;
-  description: string;
-  completion_date: string; 
-}
-
-const ProjectManagement: React.FC = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
-  const [projectName, setProjectName] = useState<string>('');
-  const [projectDescription, setProjectDescription] = useState<string>('');
+const ProjectManagement = () => {
+  const [properties, setProperties] = useState([]);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [projects, setProjects] = useState([]);
+  const [editingProjectId, setEditingProjectId] = useState(null);
   const [completionDate, setCompletionDate] = useState<Date | null>(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState<boolean>(false);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchProperties();
-    initializeProjects();
   }, []);
 
-  const fetchProperties = async () => {
-    try {
-      const response = await api.get('/properties');
-      setProperties(response.data);
-    } catch (error) {
-      Alert.alert('Error!', 'Failed to fetch properties.');
-      //console.error('Error fetching properties:', error); //debug
-    }
-  };
+  async function fetchProperties() {
+    const querySnapshot = await getDocs(collection(db, "properties"));
+    const propertyList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setProperties(propertyList);
+  }
 
-  const initializeProjects = async () => {
-    try {
-      const propertyId = await AsyncStorage.getItem('selectedPropertyId');
-      if (propertyId) {
-        fetchProjects(parseInt(propertyId));
-      }
-    } catch (error) {
-      Alert.alert('Error!', 'Failed to fetch projects.');
-      //.error('Error fetching property ID:', error); //debug
-    }
-  };
+  async function fetchProjects(propertyId) {
+    const querySnapshot = await getDocs(collection(db, "projects"));
+    const projectList = querySnapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((proj) => proj.propertyId === propertyId);
+    setProjects(projectList);
+  }
 
-  const fetchProjects = async (propertyId: number) => {
-    try {
-      const response = await api.get(`/projects?property_id=${propertyId}`);
-      setProjects(response.data);
-    } catch (error) {
-      Alert.alert('Error!', 'Failed to fetch projects.');
-      //console.error('Error fetching projects:', error); //debug
-    }
-  };
-
-  const handleSelectProperty = async (property: Property) => {
+  const handleSelectProperty = (property) => {
     setSelectedProperty(property);
-    try {
-      await AsyncStorage.setItem('selectedPropertyId', 
-        property.property_id.toString());
-      Alert.alert('Property Selected', `You selected: ${property.name}`);
-      fetchProjects(property.property_id);
-    } catch (error) {
-      Alert.alert('Error!', 'Failed to select property.');
-      //console.error('Error saving property ID:', error); debug
-    }
+    fetchProjects(property.id);
+    Alert.alert("Property Selected", `You selected: ${property.name}`);
   };
 
   const handleAddProject = async () => {
-    if (selectedProperty && projectName.trim() && projectDescription.trim() && completionDate) {
-      const formattedDate = completionDate?.toISOString();//format date for db
-      const projectData = {
-        property_id: selectedProperty.property_id,
+    if (!selectedProperty || !projectName.trim() || !projectDescription.trim() || !completionDate) {
+      Alert.alert("Error", "Please fill out all fields, including completion date.");
+      return;
+    }
+
+    try {
+      const newProject = await addDoc(collection(db, "projects"), {
         name: projectName,
         description: projectDescription,
-        completion_date: formattedDate, 
-      };
+        propertyId: selectedProperty.id,
+        userId: auth.currentUser.uid,
+        completionDate: completionDate.toISOString(), // store the date as ISO string
+      });
 
-      try {
-        const response = await api.post('/projects', projectData);
-        setProjects([...projects, response.data]); //add to list
-        Alert.alert('Success!', 'Project has been added!');
-        resetForm();
-      } catch (error) {
-        //console.error('API error during update:', error.response || error); //debug
-        Alert.alert('Error', 'Failed to add project.');
-      }
-    } else {
-      Alert.alert('Error', 'Please select a property, fill out all project fields, and choose a completion date.');
+      setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription, completionDate: completionDate }]);
+      Alert.alert("Success!", "Project added.");
+      resetForm();
+    } catch (error) {
+      Alert.alert("Error", "Failed to add project.");
     }
   };
 
   const handleUpdateProject = async () => {
-    //console.log("updating project...") //debug 
-
-    if (selectedProperty && projectName.trim() && projectDescription.trim() && completionDate && editingProjectId) {
-      const formattedDate = completionDate?.toISOString();
-      const projectData = {
-        property_id: selectedProperty.property_id,
-        name: projectName,
-        description: projectDescription,
-        completion_date: formattedDate,
-      };
-
-      //console.log("editing project id:", editingProjectId); //debug
-      //console.log("sending data:", projectData);//debug
-
-      try {
-        //console.log(`Updating project at URL: /projects/${editingProjectId}`); //debug
-        await api.put(`/projects/${editingProjectId}`, projectData);
-        Alert.alert('Success!', 'Project has been updated!');
-        setEditingProjectId(null);
-        fetchProjects(selectedProperty.property_id);//refresh after updating
-        resetForm();
-      } catch (error) {
-        //console.error('API error during update:', error.response || error); //debug
-        Alert.alert('Error', 'Failed to update project.');
-      }
-    } else {
-      Alert.alert('Error', 'Please fill out all project fields and choose a completion date.');
+    if (!editingProjectId || !selectedProperty || !projectName.trim() || !projectDescription.trim() || !completionDate) {
+      Alert.alert("Error", "Please fill out all fields, including completion date.");
+      return;
     }
-  };
 
-  const handleDeleteProject = async (projectId: number) => {
     try {
-      await api.delete(`/projects/${projectId}`);
-      Alert.alert('Deleted!', 'Project has been removed.');
-      setProjects(projects.filter((project) => project.project_id !== projectId));
+      const projectRef = doc(db, "projects", editingProjectId);
+      await updateDoc(projectRef, { name: projectName, description: projectDescription, completionDate: completionDate.toISOString() });
+
+      setProjects((prev) =>
+        prev.map((proj) =>
+          proj.id === editingProjectId ? { ...proj, name: projectName, description: projectDescription, completionDate } : proj
+        )
+      );
+
+      Alert.alert("Success!", "Project updated.");
+      resetForm();
     } catch (error) {
-      Alert.alert('Error!', 'Failed to delete project.');
-      //console.error('Error deleting project:', error); //debug
+      Alert.alert("Error", "Failed to update project.");
     }
   };
 
-  const handleEditProject = (project: Project) => {
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await deleteDoc(doc(db, "projects", projectId));
+      setProjects((prev) => prev.filter((proj) => proj.id !== projectId));
+      Alert.alert("Deleted!", "Project has been removed.");
+    } catch (error) {
+      Alert.alert("Error!", "Failed to delete project.");
+    }
+  };
+
+  const handleEditProject = (project) => {
     setProjectName(project.name);
     setProjectDescription(project.description);
-    setCompletionDate(new Date(project.completion_date));
-    setEditingProjectId(project.project_id);
-    //console.log("Editing project ID:", editingProjectId); //debug 
+    setCompletionDate(new Date(project.completionDate)); // Set the existing date
+    setEditingProjectId(project.id);
   };
 
   const resetForm = () => {
-    setProjectName('');
-    setProjectDescription('');
+    setProjectName("");
+    setProjectDescription("");
     setCompletionDate(null);
     setEditingProjectId(null);
   };
@@ -182,51 +135,87 @@ const ProjectManagement: React.FC = () => {
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-            <View style={styles.container}>
-              <Text style={styles.title}>Select a Property:</Text>
-              <FlatList
-                data={properties}
-                keyExtractor={(item) => item.property_id.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.propertyItem,
-                      selectedProperty?.property_id === item.property_id && styles.selectedProperty,
-                    ]}
-                    onPress={() => handleSelectProperty(item)}
-                  >
-                    <Text style={styles.propertyText}>{item.name}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Select a Property:</Text>
+      <FlatList
+        data={properties}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.propertyItem,
+              selectedProperty?.id === item.id && styles.selectedProperty,
+            ]}
+            onPress={() => handleSelectProperty(item)}
+          >
+            <Text style={styles.propertyText}>{item.street}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      {selectedProperty && (
+        <>
+          <Text style={styles.subtitle}>Manage Projects for:</Text>
+          <Text style={styles.selectedPropertyName}>{selectedProperty.street}</Text>
+
+          <Text style={styles.label}>Project Name:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Project Name"
+            placeholderTextColor="gray"
+            value={projectName}
+            onChangeText={setProjectName}
+          />
+          <Text style={styles.label}>Project Description:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Project Description"
+            placeholderTextColor="gray"
+            value={projectDescription}
+            onChangeText={setProjectDescription}
+            multiline
+          />
+
+          {/* Date Picker Button */}
+          <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
+            <Text style={styles.datePickerText}>
+              {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Date Picker Modal */}
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleDateChange}
+            onCancel={() => setDatePickerVisibility(false)}
+          />
+
+          <Button
+            title={editingProjectId ? "Update Project" : "Add Project"}
+            onPress={editingProjectId ? handleUpdateProject : handleAddProject}
+          />
+        </>
+      )}
+
+      {selectedProperty && projects.length > 0 && (
+        <View style={styles.projectListContainer}>
+          <Text style={styles.subtitle}>Projects for {selectedProperty.name}:</Text>
+          <FlatList
+            data={projects}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.projectItem}>
+                <Text style={styles.projectText}>
+                  {item.name} - {new Date(item.completionDate).toDateString()}
+                </Text>
+                <Text style={styles.projectDescription}>{item.description}</Text>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>
+                    <Text style={styles.buttonText}>Edit</Text>
                   </TouchableOpacity>
-                )}
-              />
-
-              {selectedProperty && (
-                <>
-                  <Text style={styles.subtitle}>Add or Update a Project for:</Text>
-                  <Text style={styles.selectedPropertyName}>{selectedProperty.name}</Text>
-                  
-                  <Text style={styles.label}>Project Name:</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Project Name"
-                    value={projectName}
-                    onChangeText={setProjectName}
-                  />
-                  <Text style={styles.label}>Project Description:</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Project Description"
-                    value={projectDescription}
-                    onChangeText={setProjectDescription}
-                    multiline
-                  />
-
-                  <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
-                    <Text style={styles.datePickerText}>
-                      {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
-                    </Text>
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.id)}>
+                    <Text style={styles.buttonText}>Delete</Text>
                   </TouchableOpacity>
 
                   <DateTimePickerModal
@@ -273,4 +262,5 @@ const ProjectManagement: React.FC = () => {
     </SafeAreaProvider>
   );
 };
+
 export default ProjectManagement;
