@@ -11,6 +11,14 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   clear: jest.fn(),
 }));
 
+jest.mock('@react-native-firebase/auth', () => () => ({
+  signInWithEmailAndPassword: jest.fn((email, password) => 
+    Promise.resolve({ user: { uid: '12345', email } })
+  ),
+  signOut: jest.fn(),
+  onAuthStateChanged: jest.fn(),
+}));
+
 // Mock the router
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),

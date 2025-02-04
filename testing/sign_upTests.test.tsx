@@ -5,6 +5,14 @@ import SignUpPage from '../app/sign_up'; // Adjust the import path if necessary
 import { Alert } from 'react-native';
 
 
+jest.mock('@react-native-firebase/auth', () => () => ({
+  createUserWithEmailAndPassword: jest.fn((email, password) => 
+    Promise.resolve({ user: { uid: '12345', email } })
+  ),
+  signInWithEmailAndPassword: jest.fn(),
+  onAuthStateChanged: jest.fn(),
+}));
+
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(),
