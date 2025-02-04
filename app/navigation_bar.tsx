@@ -2,6 +2,9 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image } from 'react-native'
+import styles from '../styles/navigation_barStyles';
+
 
 // Screens
 import HomeScreen from './main';
@@ -31,8 +34,14 @@ function MainContainer() {
             let iconName;
             let rn = route.name;
 
+            // Use custom image for HomeScreen
             if (rn === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
+              return (
+                <Image
+                  source={focused ? require('../assets/placenet.png') : require('../assets/placenet.png')}
+                  style={styles.logo}
+                />
+              );
             }
             if (rn === projectName) {
               iconName = focused ? 'briefcase' : 'briefcase-outline';
@@ -56,12 +65,48 @@ function MainContainer() {
           tabBarInactiveTintColor: 'gray',
         })}>
 
-        <Tab.Screen name={homeName} component={HomeScreen} />
-        <Tab.Screen name={propertyName} component={PropertyScreen} />
-        <Tab.Screen name={projectName} component={ProjectScreen} />
-        <Tab.Screen name={documentName} component={DocumentScreen} />
-        <Tab.Screen name={listingsName} component={ListingsScreen} />
-        <Tab.Screen name={profileName} component={ProfileScreen} />
+        <Tab.Screen
+          name={homeName}
+          component={HomeScreen}
+          options={{
+            headerShown: false, // Remove header for this screen
+          }}
+        />
+        <Tab.Screen
+          name={propertyName}
+          component={PropertyScreen}
+          options={{
+            headerShown: false, // Remove header for this screen
+          }}
+        />
+        <Tab.Screen
+          name={projectName}
+          component={ProjectScreen}
+          options={{
+            headerShown: false, // Remove header for this screen
+          }}
+        />
+        <Tab.Screen
+          name={documentName}
+          component={DocumentScreen}
+          options={{
+            headerShown: false, // Remove header for this screen
+          }}
+        />
+        <Tab.Screen
+          name={listingsName}
+          component={ListingsScreen}
+          options={{
+            headerShown: false, // Remove header for this screen
+          }}
+        />
+        <Tab.Screen
+          name={profileName}
+          component={ProfileScreen}
+          options={{
+            headerShown: false, // Remove header for this screen
+          }}
+        />
 
       </Tab.Navigator>
     </NavigationContainer>

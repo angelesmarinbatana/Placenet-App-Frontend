@@ -7,7 +7,8 @@ import {
   View, 
   FlatList, 
   Image, 
-  ActivityIndicator 
+  ActivityIndicator, 
+  TouchableOpacity
 } from 'react-native';
 import React, { useEffect, useState } from "react";
 import { db, auth } from "../config/firebaseConfig";
@@ -73,7 +74,11 @@ export default function PropertySummaryPage() {
 
         {/* Loading Indicator */}
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator 
+            size="large" 
+            color="#0000ff" 
+            testID="loading-spinner"  // Added testID here
+          />
         ) : (
           <>
             {/* Error Message */}

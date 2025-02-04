@@ -105,7 +105,11 @@ const PropertyManagement = () => {
   };
 
   return (
+    <SafeAreaProvider>
+          <SafeAreaView style={styles.container}>
     <View style={styles.container}>
+      <Text style={styles.title}>Enter a Property:</Text>
+      {/* input fields for adding/editing properties */}
       <Text style={styles.label}>Street:</Text>
       <TextInput
         style={styles.input}
@@ -170,6 +174,8 @@ const PropertyManagement = () => {
         </View>
       )}
     </View>
+    </SafeAreaView>
+        </SafeAreaProvider>
   );
 };
 

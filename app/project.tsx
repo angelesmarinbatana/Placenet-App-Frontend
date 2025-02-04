@@ -191,12 +191,12 @@ const ProjectManagement = () => {
             onCancel={() => setDatePickerVisibility(false)}
           />
 
-          <Button
-            title={editingProjectId ? "Update Project" : "Add Project"}
-            onPress={editingProjectId ? handleUpdateProject : handleAddProject}
-          />
-        </>
-      )}
+                  <Button
+                    title={editingProjectId ? "Update Project" : "Add Project"}
+                    onPress={editingProjectId ? handleUpdateProject : handleAddProject}
+                  />
+                </>
+              )}
 
       {selectedProperty && projects.length > 0 && (
         <View style={styles.projectListContainer}>

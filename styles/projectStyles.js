@@ -57,7 +57,7 @@ export default StyleSheet.create({
         fontSize: 16,
       },
       projectListContainer: {
-        marginTop: 20,
+        marginTop: 0,
       },
       projectItem: {
         padding: 15,
