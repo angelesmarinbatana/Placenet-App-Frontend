@@ -97,7 +97,7 @@ export default function ListingSummariesPage() {
 
         {/* Loading Indicator */}
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#0000ff" testID="loading-indicator" />
         ) : (
           <>
             {/* Error Message */}

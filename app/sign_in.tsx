@@ -62,6 +62,7 @@ export default function LoginPage() {
           value={username}
           placeholder="Username"
           placeholderTextColor="#A9A9A9"
+          testID="username-input"
         />
 
         <TextInput
@@ -70,6 +71,7 @@ export default function LoginPage() {
           value={password}
           placeholder="Password"
           placeholderTextColor="#A9A9A9"
+          testID="password-input"
         />
 
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}

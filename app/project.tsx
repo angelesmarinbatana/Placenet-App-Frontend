@@ -234,6 +234,7 @@ const ProjectManagement: React.FC = () => {
                     mode="date"
                     onConfirm={handleDateChange}
                     onCancel={() => setDatePickerVisibility(false)}
+                    testID="date-picker-modal"
                   />
 
                   <Button
@@ -256,7 +257,7 @@ const ProjectManagement: React.FC = () => {
                         </Text>
                         <Text style={styles.projectDescription}>{item.description}</Text>
                         <View style={styles.buttonContainer}>
-                          <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>
+                          <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)} testID={'delete-button-1'}>
                             <Text style={styles.buttonText}>Edit</Text>
                           </TouchableOpacity>
                           <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.project_id)}>
