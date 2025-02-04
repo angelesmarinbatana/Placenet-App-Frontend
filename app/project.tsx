@@ -217,49 +217,13 @@ const ProjectManagement = () => {
                   <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.id)}>
                     <Text style={styles.buttonText}>Delete</Text>
                   </TouchableOpacity>
-
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    onConfirm={handleDateChange}
-                    onCancel={() => setDatePickerVisibility(false)}
-                  />
-
-                  <Button
-                    title={editingProjectId ? "Update Project" : "Add Project"}
-                    onPress={editingProjectId ? handleUpdateProject : handleAddProject}
-                  />
-                </>
-              )}
-
-              {selectedProperty && projects.length > 0 && (
-                <View style={styles.projectListContainer}>
-                  <Text style={styles.subtitle}>Projects for {selectedProperty.name}:</Text>
-                  <FlatList
-                    data={projects}
-                    keyExtractor={(item) => item.project_id.toString()}
-                    renderItem={({ item }) => (
-                      <View style={styles.projectItem}>
-                        <Text style={styles.projectText}>
-                          {item.name} - {new Date(item.completion_date).toDateString()}
-                        </Text>
-                        <Text style={styles.projectDescription}>{item.description}</Text>
-                        <View style={styles.buttonContainer}>
-                          <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>
-                            <Text style={styles.buttonText}>Edit</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.project_id)}>
-                            <Text style={styles.buttonText}>Delete</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    )}
-                  />
                 </View>
-              )}
+              </View>
+            )}
+          />
         </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+      )}
+    </View>
   );
 };
 
