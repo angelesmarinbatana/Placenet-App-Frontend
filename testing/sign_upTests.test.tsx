@@ -6,6 +6,8 @@ import { Alert } from 'react-native';
 import '@testing-library/jest-native/extend-expect';
 
 
+jest.mock('./__mocks__/firebaseConfig');
+
 jest.mock('@react-native-firebase/auth', () => () => ({
   createUserWithEmailAndPassword: jest.fn((email, password) => 
     Promise.resolve({ user: { uid: '12345', email } })

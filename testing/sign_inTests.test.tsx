@@ -4,6 +4,8 @@ import LoginPage from '../app/sign_in'; // Adjust the import path if needed
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 
+jest.mock('./__mocks__/firebaseConfig');
+
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
   setItem: jest.fn(),
