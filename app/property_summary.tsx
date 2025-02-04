@@ -92,7 +92,11 @@ export default function PropertySummaryPage() {
 
         {/* loading */}
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator 
+            size="large" 
+            color="#0000ff" 
+            testID="loading-spinner"  // Added testID here
+          />
         ) : (
           <>
             {/* error */}
@@ -111,3 +115,4 @@ export default function PropertySummaryPage() {
     </SafeAreaProvider>
   );
 }
+
