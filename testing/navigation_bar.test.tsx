@@ -16,8 +16,10 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 describe('Navigation Bar', () => {
   it('should render the correct screen names', () => {
     render(
-      <MainContainer />
-      
+      <NavigationContainer>
+        <MainContainer />
+      </NavigationContainer>
+
     );
 
 
