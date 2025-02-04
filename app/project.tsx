@@ -189,6 +189,7 @@ const ProjectManagement = () => {
             mode="date"
             onConfirm={handleDateChange}
             onCancel={() => setDatePickerVisibility(false)}
+            testID="date-picker-modal"
           />
 
                   <Button
