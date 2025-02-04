@@ -4,6 +4,15 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SignUpPage from '../app/sign_up'; // Adjust the import path if necessary
 import { Alert } from 'react-native';
 
+
+// Mock AsyncStorage
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  setItem: jest.fn(),
+  getItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+}));
+
 // Mocking expo-router's useRouter hook for navigation
 jest.mock('expo-router', () => ({
   useRouter: () => ({
@@ -37,7 +46,7 @@ describe('SignUpPage', () => {
         <SignUpPage />
       </SafeAreaProvider>
     );
-    expect(screen.getByPlaceholderText('Username')).toBeTruthy();
+    expect(screen.getByPlaceholderText('Email')).toBeTruthy();
     expect(screen.getByPlaceholderText('Password')).toBeTruthy();
     expect(screen.getByPlaceholderText('Confirm Password')).toBeTruthy();
     expect(screen.getByText('Sign Up')).toBeTruthy();
