@@ -25,7 +25,8 @@ const PropertyManagement = () => {
       const propertyList = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      }))
+      .filter(property => property.userId === auth.currentUser?.uid);
       setProperties(propertyList);
     } catch (error) {
       Alert.alert("Error!", "Failed to fetch properties.");
@@ -111,7 +112,6 @@ const PropertyManagement = () => {
           <SafeAreaView style={styles.container}>
     <View style={styles.container}>
       <Text style={styles.title}>Enter a Property:</Text>
-      {/* input fields for adding/editing properties */}
       <Text style={styles.label}>Street:</Text>
       <TextInput
         style={styles.input}

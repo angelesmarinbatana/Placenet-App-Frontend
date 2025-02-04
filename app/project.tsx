@@ -39,15 +39,16 @@ const ProjectManagement = () => {
     const propertyList = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    }))
+    .filter(property => property.userId === auth.currentUser?.uid);
     setProperties(propertyList);
   }
 
   async function fetchProjects(propertyId) {
-    const querySnapshot = await getDocs(collection(db, "projects"));
+    const projectsRef = collection(db, "properties", propertyId, "projects"); 
+    const querySnapshot = await getDocs(projectsRef);
     const projectList = querySnapshot.docs
-      .map((doc) => ({ id: doc.id, ...doc.data() }))
-      .filter((proj) => proj.propertyId === propertyId);
+      .map((doc) => ({ id: doc.id, ...doc.data() }));
     setProjects(projectList);
   }
 
@@ -62,16 +63,18 @@ const ProjectManagement = () => {
       Alert.alert("Error", "Please fill out all fields, including completion date.");
       return;
     }
-
+  
     try {
-      const newProject = await addDoc(collection(db, "projects"), {
+      const projectsRef = collection(db, "properties", selectedProperty.id, "projects");
+  
+      const newProject = await addDoc(projectsRef, {
         name: projectName,
         description: projectDescription,
         propertyId: selectedProperty.id,
         userId: auth.currentUser.uid,
-        completionDate: completionDate.toISOString(), // store the date as ISO string
+        completionDate: completionDate.toISOString(),
       });
-
+  
       setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription, completionDate: completionDate }]);
       Alert.alert("Success!", "Project added.");
       resetForm();
@@ -103,10 +106,13 @@ const ProjectManagement = () => {
     }
   };
 
-  const handleDeleteProject = async (projectId) => {
+  const handleDeleteProject = async (propertyId, projectId) => {
     try {
-      await deleteDoc(doc(db, "projects", projectId));
-      setProjects((prev) => prev.filter((proj) => proj.id !== projectId));
+      await deleteDoc(doc(db, "properties", propertyId, "projects", projectId));
+      setProjects((prev) => 
+        prev.filter((proj) => proj.id !== projectId) 
+      );
+  
       Alert.alert("Deleted!", "Project has been removed.");
     } catch (error) {
       Alert.alert("Error!", "Failed to delete project.");
@@ -116,7 +122,7 @@ const ProjectManagement = () => {
   const handleEditProject = (project) => {
     setProjectName(project.name);
     setProjectDescription(project.description);
-    setCompletionDate(new Date(project.completionDate)); // Set the existing date
+    setCompletionDate(new Date(project.completionDate)); 
     setEditingProjectId(project.id);
   };
 
@@ -176,14 +182,12 @@ const ProjectManagement = () => {
             multiline
           />
 
-          {/* Date Picker Button */}
           <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
             <Text style={styles.datePickerText}>
               {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
             </Text>
           </TouchableOpacity>
 
-          {/* Date Picker Modal */}
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"
@@ -214,7 +218,7 @@ const ProjectManagement = () => {
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditProject(item)}>
                     <Text style={styles.buttonText}>Edit</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.id)}>
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteProject(item.propertyId, item.id)}>
                     <Text style={styles.buttonText}>Delete</Text>
                   </TouchableOpacity>
                 </View>
