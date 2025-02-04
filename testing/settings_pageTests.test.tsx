@@ -1,34 +1,46 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react-native';
-import Settings from '../app/settings_page';
-import { useRouter } from 'expo-router';  // Import here for proper mocking
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { render, fireEvent } from '@testing-library/react-native';
+import Settings from '../app/settings_page'; // Adjust the import path if needed
+import { useRouter } from 'expo-router';
 
-// Mocking the useRouter hook
+// Mocking the router
 jest.mock('expo-router', () => ({
-  useRouter: jest.fn(() => ({
-    push: jest.fn(),
-  })),
+  useRouter: jest.fn(),
 }));
 
-// Mock SafeAreaView and SafeAreaProvider correctly
+// Mock SafeAreaView for tests
 jest.mock('react-native-safe-area-context', () => ({
+  SafeAreaView: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   SafeAreaProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  SafeAreaView: ({ children }: { children: React.ReactNode }) => <>{children}</>, // Mock SafeAreaView
 }));
 
-describe('Settings Page', () => {
-  it('renders and has a logout button', async () => {
-    render(
-      <SafeAreaProvider>
-        <Settings />
-      </SafeAreaProvider>
-    );
+describe('Settings Component', () => {
+  let pushMock: jest.Mock;
 
-    // Check if the "Log out" button is rendered correctly
-    expect(screen.getByText('Log out')).toBeTruthy();
+  beforeEach(() => {
+    pushMock = jest.fn();
+    (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
+    jest.clearAllMocks();
+  });
+
+  test('renders Settings screen with Log out button', () => {
+    const { getByText } = render(<Settings />);
+
+    // Check if the Log out button is rendered
+    expect(getByText('Log out')).toBeTruthy();
+  });
+
+  test('navigates to the sign_in screen when the Log out button is pressed', () => {
+    const { getByText } = render(<Settings />);
+
+    // Press the Log out button
+    fireEvent.press(getByText('Log out'));
+
+    // Check if router.push was called with the correct route
+    expect(pushMock).toHaveBeenCalledWith('/sign_in');
   });
 });
+
 
 
 

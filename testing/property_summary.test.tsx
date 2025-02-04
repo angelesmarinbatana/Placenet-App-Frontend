@@ -5,6 +5,12 @@ import api from '../API/api';
 import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
 
+afterEach(() => {
+  jest.clearAllMocks();  // Clear mocks after each test
+  jest.useRealTimers();  // Ensure any timers are cleared
+});
+
+
 // Mock API responses
 jest.mock('../API/api');
 jest.mock('expo-secure-store');

@@ -24,37 +24,7 @@ describe('ListingSummariesPage', () => {
     // Wait for the component to fetch the data (simulate loading phase)
     await waitFor(() => expect(screen.queryByTestId('loading-indicator')).toBeTruthy());
   });
-
-  /*it('should display properties when data is fetched successfully', async () => {
-    const mockProperties = [
-      { id: '1', name: 'Property 1', image: 'http://example.com/property1.jpg' },
-      { id: '2', name: 'Property 2', image: 'http://example.com/property2.jpg' }
-    ];
-    
-    api.get.mockResolvedValueOnce({ data: [{ Properties: mockProperties }] });
-    SecureStore.getItemAsync.mockResolvedValueOnce('fake_token');
-
-    render(<ListingSummariesPage />);
-
-    // Wait for properties to load
-    //await waitFor(() => screen.getByText('Property 1'));
-
-    // Ensure properties are rendered
-    expect(screen.getByText('Property 1')).toBeTruthy();
-    expect(screen.getByText('Property 2')).toBeTruthy();
-  });
-
-  it('should show error message when no token is available', async () => {
-    SecureStore.getItemAsync.mockResolvedValueOnce(null);  // Simulate no token
-
-    render(<ListingSummariesPage />);
-
-    // Wait for the error message
-    await waitFor(() => screen.getByText('Authentication failed! Please log in again.'));
-
-    // Ensure error message is displayed
-    expect(screen.getByText('Authentication failed! Please log in again.')).toBeTruthy();
-  }); */
+  
 
   it('should show error message when API call fails', async () => {
     api.get.mockRejectedValueOnce(new Error('Failed to fetch'));  // Mock API failure

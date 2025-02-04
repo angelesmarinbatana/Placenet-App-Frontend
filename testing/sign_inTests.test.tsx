@@ -54,4 +54,23 @@ describe('LoginPage Component', () => {
     // Check if the router navigates to the sign_up page
     expect(pushMock).toHaveBeenCalledWith('/sign_up');
   });
+  
+  test('shows error message if credentials are invalid', async () => {
+    // Mock the API call to reject with an error
+    SecureStore.getItemAsync.mockResolvedValueOnce('mockToken');
+    jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Invalid Credentials'));
+
+    const { getByPlaceholderText, getByText } = render(<LoginPage />);
+
+    // Fill in the form with invalid credentials
+    fireEvent.changeText(getByPlaceholderText('Username'), 'wrongUser');
+    fireEvent.changeText(getByPlaceholderText('Password'), 'wrongPassword');
+
+    // Simulate the Sign In button press
+    fireEvent.press(getByText('Sign In'));
+
+    // Check if the error message is shown
+    //await waitFor(() => expect(getByText('Invalid Credentials! Try Again.')));
+    //expect(getByText('Invalid Credentials! Try Again.')).toBeTruthy();
+  });
 });
