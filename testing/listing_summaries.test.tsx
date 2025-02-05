@@ -32,7 +32,7 @@ jest.mock('react-native-safe-area-context', () => ({
   SafeAreaProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-describe('PropertySummaryPage', () => {
+describe('ListingSummaryPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -40,7 +40,7 @@ describe('PropertySummaryPage', () => {
 
   it('check if property has project attached', async () => {
     // Simulate SecureStore returning a valid token
-    SecureStore.getItemAsync.mockResolvedValue('mockToken');
+    //SecureStore.getItemAsync.mockResolvedValue('mockToken');
 
     // Simulate an error scenario without fetching data
     render(<PropertySummaryPage />);
