@@ -6,6 +6,7 @@ import { db, auth } from '../firebaseConfig';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+jest.setTimeout(10000);
 // Mock Firebase Firestore and Auth
 jest.mock('firebase/firestore', () => ({
   collection: jest.fn(),
@@ -38,7 +39,6 @@ describe('ProjectManagement Component', () => {
 
 
   it('should fetch properties and display them', async () => {
-    jest.setTimeout(10000); // Increase timeout for stability
     const mockProperties = [
       { id: '1', street: '123 Main St' },
       { id: '2', street: '456 Oak Ave' },
