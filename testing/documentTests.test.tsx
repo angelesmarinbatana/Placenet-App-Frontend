@@ -68,6 +68,7 @@ describe('UploadFile Component', () => {
   
     // Wait for the project to be listed and select it
     await waitFor(() => expect(getByText('Bathroom')).toBeTruthy());
+    
     fireEvent.press(getByText('Bathroom'));
   
     // Simulate uploading a document (this triggers the "Remove" button to show)

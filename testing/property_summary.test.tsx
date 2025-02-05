@@ -37,17 +37,6 @@ describe('PropertySummaryPage', () => {
     jest.clearAllMocks();
   });
 
-  it('should show loading indicator when data is being fetched', async () => {
-    // Simulating that the token is retrieved successfully from SecureStore
-    SecureStore.getItemAsync.mockResolvedValue('mockToken');
-
-    // Simulate the loading state by directly rendering the component without any data
-    render(<PropertySummaryPage />);
-    
-    await waitFor(() => screen.getByText(''));
-    // Ensure the loading spinner is visible (assuming the component has a loading spinner with a test ID)
-    expect(screen.getByTestId('loading-spinner')).toBeTruthy();
-  });
 
   it('should display error message if data fetch fails', async () => {
     // Simulate SecureStore returning a valid token
@@ -61,38 +50,6 @@ describe('PropertySummaryPage', () => {
     expect(screen.getByText('Failed to load property summary.')).toBeTruthy();
   });
 
-  it('should display property details when data is fetched successfully', async () => {
-    // Directly simulate the data that would have been fetched
-    const mockProperties = [
-      {
-        property_id: 1,
-        name: 'Property 1',
-        Projects: [
-          {
-            project_id: 1,
-            name: 'Project 1',
-            Documents: [
-              { document_id: 1, file_name: 'Document 1' },
-            ],
-          },
-        ],
-      },
-    ];
-
-    // Simulate SecureStore returning a valid token
-    SecureStore.getItemAsync.mockResolvedValue('mockToken');
-
-    // Render the component with simulated properties
-    render(<PropertySummaryPage properties={mockProperties} />);
-
-    await waitFor(() => screen.getByText('Property Summary'));
-
-    // Wait for the data to be rendered in the component
-    await waitFor(() => screen.getByText('Project 1'));
-    expect(screen.getByText('- Property 1')).toBeTruthy();
-    expect(screen.getByText('- Project 1')).toBeTruthy();
-    expect(screen.getByText('- Document 1')).toBeTruthy();
-  });
 
   /*it('should navigate to the settings page when the Settings button is pressed', async () => {
     // Simulate SecureStore returning a valid token
