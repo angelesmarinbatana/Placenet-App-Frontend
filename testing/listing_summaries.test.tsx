@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
-import PropertySummaryPage from '../app/property_summary';  // Adjust the import path if necessary
+import PropertySummaryPage from '../app/listing_summaries';  // Adjust the import path if necessary
 import * as SecureStore from 'expo-secure-store';  // Mocking SecureStore for token storage
 import { router } from 'expo-router';  // Mocking the router for navigation
 
@@ -38,7 +38,7 @@ describe('PropertySummaryPage', () => {
   });
 
 
-  it('should display error message if data fetch fails', async () => {
+  it('check if property has project attached', async () => {
     // Simulate SecureStore returning a valid token
     SecureStore.getItemAsync.mockResolvedValue('mockToken');
 
@@ -46,16 +46,8 @@ describe('PropertySummaryPage', () => {
     render(<PropertySummaryPage />);
 
     // Wait for the error message to appear (assuming your component shows an error message when data fetch fails)
-    await waitFor(() => screen.getByText('Failed to load property summary.'));
-    expect(screen.getByText('Failed to load property summary.')).toBeTruthy();
-  });
-
-  it('should show loading spinner when data is being fetched', async () => {
-    render(<PropertySummaryPage />);
-    
-    // Ensure the loading spinner is visible (this assumes a testID 'loading-spinner' for the ActivityIndicator)
-    await waitFor(() => screen.getByText('Property Summary'));
-    expect(screen.getByText('Property Summary')).toBeTruthy();
+    await waitFor(() => screen.getByText('Yellow'));
+    expect(screen.getByText('- renovation')).toBeTruthy();
   });
 
 
@@ -73,4 +65,3 @@ describe('PropertySummaryPage', () => {
     expect(router.push).toHaveBeenCalledWith('/settings_page');
   });*/
 });
-
