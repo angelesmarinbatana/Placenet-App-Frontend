@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import ProjectManagement from '../app/project';
 import { Alert } from 'react-native';
-import { db, auth } from '../config/firebaseConfig';
+import { db, auth } from '../firebaseConfig';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,7 +21,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     getItem: jest.fn(() => Promise.resolve()),
   }));
 
-jest.mock('../config/firebaseConfig', () => ({
+jest.mock('../firebaseConfig', () => ({
   auth: { currentUser: { uid: 'test-user-id' } }, // Mock user ID
   db: {},
 }));

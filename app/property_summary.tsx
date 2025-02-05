@@ -11,7 +11,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import React, { useEffect, useState } from "react";
-import { db, auth } from "../config/firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import styles from "../styles/property_summaryStyle";
 

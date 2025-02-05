@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebaseConfig";
+import { auth } from "../firebaseConfig";
 import styles from "../styles/sign_inStyles";
 
 export default function LoginPage() {

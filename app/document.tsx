@@ -17,7 +17,7 @@ import {
   Linking,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import { db, storage, auth } from "../config/firebaseConfig";
+import { db, storage, auth } from "../firebaseConfig";
 import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import styles from '../styles/documentStyles';

@@ -8,7 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import { db, auth } from "../config/firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import {
   collection,
   getDocs,
