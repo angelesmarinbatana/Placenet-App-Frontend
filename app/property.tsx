@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
-import { db, auth } from "../config/firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import styles from "../styles/propertyStyles";
 import "regenerator-runtime/runtime";

@@ -8,7 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import { db, auth } from "../config/firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import {
   collection,
   getDocs,
@@ -189,6 +189,7 @@ const ProjectManagement = () => {
             mode="date"
             onConfirm={handleDateChange}
             onCancel={() => setDatePickerVisibility(false)}
+            testID="date-picker-modal"
           />
 
                   <Button
