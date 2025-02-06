@@ -31,6 +31,7 @@ export default function LoginPage() {
       router.push("/navigation_bar");
     } catch (error) {
       setErrorMessage("Invalid Credentials! Try Again.");
+      console.log(error);
     }
   }
 
