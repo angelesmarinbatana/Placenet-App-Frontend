@@ -34,7 +34,7 @@ const UploadFile = () => {
   }, []);
 
   async function fetchProjects() {
-    const querySnapshot = await getDocs(collection(db, "projects"));
+    const querySnapshot = await getDocs(collection(db, "properties", propertyId, "projects"));
     const projectList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setProjects(projectList);
   }

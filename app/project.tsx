@@ -90,12 +90,18 @@ const ProjectManagement = () => {
     }
 
     try {
-      const projectRef = doc(db, "projects", editingProjectId);
-      await updateDoc(projectRef, { name: projectName, description: projectDescription, completionDate: completionDate.toISOString() });
+      const projectRef = doc(db, "properties", selectedProperty.id, "projects", editingProjectId);
+      await updateDoc(projectRef, { 
+        name: projectName, 
+        description: projectDescription, 
+        completionDate: completionDate.toISOString() 
+      });
 
       setProjects((prev) =>
         prev.map((proj) =>
-          proj.id === editingProjectId ? { ...proj, name: projectName, description: projectDescription, completionDate } : proj
+          proj.id === editingProjectId 
+            ? { ...proj, name: projectName, description: projectDescription, completionDate } 
+            : proj
         )
       );
 
@@ -103,6 +109,7 @@ const ProjectManagement = () => {
       resetForm();
     } catch (error) {
       Alert.alert("Error", "Failed to update project.");
+      console.log(error);
     }
   };
 
