@@ -248,6 +248,7 @@ import React, {
             mode="date"
             onConfirm={handleDateChange}
             onCancel={() => setDatePickerVisibility(false)}
+            testID="date-picker-modal"
           />
  
  
