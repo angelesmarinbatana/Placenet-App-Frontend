@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import {
+import React, {
+  useState,
+  useEffect
+ } from 'react';
+ import {
   View,
   TextInput,
   Button,
@@ -7,20 +10,21 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-} from 'react-native';
-import { db, auth } from "../firebaseConfig";
-import {
+ } from 'react-native';
+ import { db, auth } from "../firebaseConfig";
+ import {
   collection,
   getDocs,
   addDoc,
   updateDoc,
   deleteDoc,
   doc,
-} from "firebase/firestore";
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import styles from "../styles/projectStyles";
-
-const ProjectManagement = () => {
+ } from "firebase/firestore";
+ import DateTimePickerModal from 'react-native-modal-datetime-picker';
+ import styles from "../styles/projectStyles";
+ 
+ 
+ const ProjectManagement = () => {
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [projectName, setProjectName] = useState("");
@@ -29,111 +33,164 @@ const ProjectManagement = () => {
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [completionDate, setCompletionDate] = useState<Date | null>(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState<boolean>(false);
-
+ 
+ 
   useEffect(() => {
-    fetchProperties();
+    fetchUserProperties();
   }, []);
-
-  async function fetchProperties() {
-    const querySnapshot = await getDocs(collection(db, "properties"));
-    const propertyList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setProperties(propertyList);
+ 
+ 
+  // prop for the logged-in user
+  async function fetchUserProperties() {
+    try {
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+ 
+ 
+      const propertiesSnapshot = await getDocs(collection(db, `users/${userId}/properties`));
+      const propertyList = propertiesSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+ 
+ 
+      setProperties(propertyList);
+    } catch (error) {
+      Alert.alert("Error!", "Failed to fetch properties.");
+    }
   }
-
+ 
+ 
+  //project for selected prop
   async function fetchProjects(propertyId) {
-    const querySnapshot = await getDocs(collection(db, "projects"));
-    const projectList = querySnapshot.docs
-      .map((doc) => ({ id: doc.id, ...doc.data() }))
-      .filter((proj) => proj.propertyId === propertyId);
-    setProjects(projectList);
+    try {
+      const userId = auth.currentUser?.uid;
+      if (!userId) return;
+ 
+ 
+      const projectsRef = collection(db, `users/${userId}/properties/${propertyId}/projects`);
+      const querySnapshot = await getDocs(projectsRef);
+      const projectList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+ 
+ 
+      setProjects(projectList);
+    } catch (error) {
+      Alert.alert("Error!", "Failed to fetch projects.");
+    }
   }
-
+ 
+ 
   const handleSelectProperty = (property) => {
     setSelectedProperty(property);
     fetchProjects(property.id);
-    Alert.alert("Property Selected", `You selected: ${property.name}`);
+    Alert.alert("Property Selected", `You selected: ${property.street}`);
   };
-
+ 
+ 
+  //add proj under prop
   const handleAddProject = async () => {
     if (!selectedProperty || !projectName.trim() || !projectDescription.trim() || !completionDate) {
       Alert.alert("Error", "Please fill out all fields, including completion date.");
       return;
     }
-
+ 
+ 
     try {
-      const newProject = await addDoc(collection(db, "projects"), {
+      const userId = auth.currentUser?.uid;
+      const projectsRef = collection(db, `users/${userId}/properties/${selectedProperty.id}/projects`);
+ 
+ 
+      const newProject = await addDoc(projectsRef, {
         name: projectName,
         description: projectDescription,
-        propertyId: selectedProperty.id,
-        userId: auth.currentUser.uid,
-        completionDate: completionDate.toISOString(), // store the date as ISO string
+        completionDate: completionDate.toISOString(),
       });
-
-      setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription, completionDate: completionDate }]);
+ 
+ 
+      setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription, completionDate }]);
       Alert.alert("Success!", "Project added.");
       resetForm();
     } catch (error) {
       Alert.alert("Error", "Failed to add project.");
     }
   };
-
+ 
+ 
+  // update proj
   const handleUpdateProject = async () => {
     if (!editingProjectId || !selectedProperty || !projectName.trim() || !projectDescription.trim() || !completionDate) {
       Alert.alert("Error", "Please fill out all fields, including completion date.");
       return;
     }
-
+ 
+ 
     try {
-      const projectRef = doc(db, "projects", editingProjectId);
-      await updateDoc(projectRef, { name: projectName, description: projectDescription, completionDate: completionDate.toISOString() });
-
-      setProjects((prev) =>
-        prev.map((proj) =>
-          proj.id === editingProjectId ? { ...proj, name: projectName, description: projectDescription, completionDate } : proj
+      const userId = auth.currentUser?.uid;
+      const projectRef = doc(db, `users/${userId}/properties/${selectedProperty.id}/projects`, editingProjectId);
+     
+      await updateDoc(projectRef, {
+        name: projectName,
+        description: projectDescription,
+        completionDate: completionDate.toISOString(),
+      });
+ 
+ 
+      setProjects(prev =>
+        prev.map(proj =>
+          proj.id === editingProjectId
+            ? { ...proj, name: projectName, description: projectDescription, completionDate }
+            : proj
         )
       );
-
+ 
+ 
       Alert.alert("Success!", "Project updated.");
       resetForm();
     } catch (error) {
       Alert.alert("Error", "Failed to update project.");
     }
   };
-
+ 
+ 
+  // del proj
   const handleDeleteProject = async (projectId) => {
     try {
-      await deleteDoc(doc(db, "projects", projectId));
-      setProjects((prev) => prev.filter((proj) => proj.id !== projectId));
+      const userId = auth.currentUser?.uid;
+      const projectRef = doc(db, `users/${userId}/properties/${selectedProperty.id}/projects`, projectId);
+     
+      await deleteDoc(projectRef);
+      setProjects(prev => prev.filter(proj => proj.id !== projectId));
       Alert.alert("Deleted!", "Project has been removed.");
     } catch (error) {
       Alert.alert("Error!", "Failed to delete project.");
     }
   };
-
+ 
+ 
   const handleEditProject = (project) => {
     setProjectName(project.name);
     setProjectDescription(project.description);
-    setCompletionDate(new Date(project.completionDate)); // Set the existing date
+    setCompletionDate(new Date(project.completionDate));
     setEditingProjectId(project.id);
   };
-
+ 
+ 
   const resetForm = () => {
     setProjectName("");
     setProjectDescription("");
     setCompletionDate(null);
     setEditingProjectId(null);
   };
-
+ 
+ 
   const handleDateChange = (selectedDate?: Date) => {
     setDatePickerVisibility(false);
     if (selectedDate) {
       setCompletionDate(selectedDate);
     }
   };
-
+ 
+ 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Select a Property:</Text>
@@ -152,12 +209,14 @@ const ProjectManagement = () => {
           </TouchableOpacity>
         )}
       />
-
+ 
+ 
       {selectedProperty && (
         <>
           <Text style={styles.subtitle}>Manage Projects for:</Text>
           <Text style={styles.selectedPropertyName}>{selectedProperty.street}</Text>
-
+ 
+ 
           <Text style={styles.label}>Project Name:</Text>
           <TextInput
             style={styles.input}
@@ -175,15 +234,15 @@ const ProjectManagement = () => {
             onChangeText={setProjectDescription}
             multiline
           />
-
-          {/* Date Picker Button */}
+ 
+ 
           <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={styles.datePickerButton}>
             <Text style={styles.datePickerText}>
               {completionDate ? completionDate.toDateString() : 'Select Completion Date'}
             </Text>
           </TouchableOpacity>
-
-          {/* Date Picker Modal */}
+ 
+ 
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"
@@ -191,17 +250,19 @@ const ProjectManagement = () => {
             onCancel={() => setDatePickerVisibility(false)}
             testID="date-picker-modal"
           />
-
-                  <Button
-                    title={editingProjectId ? "Update Project" : "Add Project"}
-                    onPress={editingProjectId ? handleUpdateProject : handleAddProject}
-                  />
-                </>
-              )}
-
+ 
+ 
+          <Button
+            title={editingProjectId ? "Update Project" : "Add Project"}
+            onPress={editingProjectId ? handleUpdateProject : handleAddProject}
+          />
+        </>
+      )}
+ 
+ 
       {selectedProperty && projects.length > 0 && (
         <View style={styles.projectListContainer}>
-          <Text style={styles.subtitle}>Projects for {selectedProperty.name}:</Text>
+          <Text style={styles.subtitle}>Projects for {selectedProperty.street}:</Text>
           <FlatList
             data={projects}
             keyExtractor={(item) => item.id}
@@ -226,6 +287,8 @@ const ProjectManagement = () => {
       )}
     </View>
   );
-};
-
-export default ProjectManagement;
+ };
+ 
+ 
+ export default ProjectManagement;
+ 

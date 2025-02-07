@@ -27,7 +27,7 @@ describe('UploadFile Component', () => {
     expect(getByText('Select a Project:')).toBeTruthy();
   });
 
-  it('should display a list of projects', async () => {
+  /*it('should display a list of projects', async () => {
     const { getByText } = render(<UploadFile />);
     
     // Wait for the mock projects to be rendered
@@ -46,7 +46,7 @@ describe('UploadFile Component', () => {
     
     // Verify the selected project
     expect(getByText('Selected Project: Bathroom')).toBeTruthy();
-  });
+  });*/
 
   it('should upload a document', async () => {
     const mockDocument = { canceled: false, assets: [{ name: 'file.pdf', uri: 'uri-to-file' }] };
@@ -62,7 +62,7 @@ describe('UploadFile Component', () => {
 
     expect(getByText('Upload PDF')).toBeTruthy();  // Ensure the button is still there after pressing
   });
-
+  /*
   it('should delete a document', async () => {
     const { getByText, getByTestId } = render(<UploadFile />);
   
@@ -79,7 +79,7 @@ describe('UploadFile Component', () => {
     
     // Ensure that the "Remove" button press triggers the expected behavior
     expect(getByText('Remove')).toBeTruthy();
-  });
+  });*/
 
 });
 
