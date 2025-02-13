@@ -22,6 +22,7 @@ import React, {
  } from "firebase/firestore";
  import styles from "../styles/propertyStyles";
  import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+ import {add_property} from "../components/BackendCalls";
  
  
  const PropertyManagement = () => {
@@ -68,7 +69,7 @@ import React, {
  
  
     try {
-      const userId = auth.currentUser?.uid;
+      /*const userId = auth.currentUser?.uid;
       if (!userId) {
         Alert.alert("Error!", "User not authenticated.");
         return;
@@ -80,7 +81,9 @@ import React, {
         city,
         state,
         zip,
-      });
+      });*/
+
+      const newProperty = add_property(street, city, state, zip);
  
  
       setProperties([...properties, { id: newProperty.id, street, city, state, zip }]);
