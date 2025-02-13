@@ -22,7 +22,7 @@ import React, {
  } from "firebase/firestore";
  import styles from "../styles/propertyStyles";
  import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
- import {add_property} from "../components/BackendCalls";
+ import {add_property, update_property} from "../components/BackendCalls";
  
  
  const PropertyManagement = () => {
@@ -108,8 +108,10 @@ import React, {
       if (!userId) return;
  
  
-      const propertyRef = doc(db, `users/${userId}/properties`, editingId);
-      await updateDoc(propertyRef, { street, city, state, zip });
+      /*const propertyRef = doc(db, `users/${userId}/properties`, editingId);
+      await updateDoc(propertyRef, { street, city, state, zip });*/
+
+      update_property(street, city, state, zip, editingId);
  
  
       setProperties((prev) =>
