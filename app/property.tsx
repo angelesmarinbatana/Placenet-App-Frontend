@@ -22,7 +22,7 @@ import React, {
  } from "firebase/firestore";
  import styles from "../styles/propertyStyles";
  import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
- import {add_property, update_property} from "../components/BackendCalls";
+ import {add_property, update_property, delete_property, fetch_properties} from "../components/BackendCalls";
  
  
  const PropertyManagement = () => {
@@ -42,7 +42,7 @@ import React, {
  
   const fetchUserProperties = async () => {
     try {
-      const userId = auth.currentUser?.uid;
+      /*const userId = auth.currentUser?.uid;
       if (!userId) return;
  
  
@@ -50,8 +50,9 @@ import React, {
       const propertyList = propertiesSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      }));
- 
+      }));*/
+      const propertyList = await fetch_properties();
+      console.log(propertyList);
  
       setProperties(propertyList);
     } catch (error) {
@@ -83,7 +84,7 @@ import React, {
         zip,
       });*/
 
-      const newProperty = add_property(street, city, state, zip);
+      const newProperty = await add_property(street, city, state, zip);
  
  
       setProperties([...properties, { id: newProperty.id, street, city, state, zip }]);
@@ -91,6 +92,7 @@ import React, {
       resetForm();
     } catch (error) {
       Alert.alert("Error!", "Failed to add property.");
+      console.log(error);
     }
   };
  
@@ -111,7 +113,7 @@ import React, {
       /*const propertyRef = doc(db, `users/${userId}/properties`, editingId);
       await updateDoc(propertyRef, { street, city, state, zip });*/
 
-      update_property(street, city, state, zip, editingId);
+      await update_property(street, city, state, zip, editingId);
  
  
       setProperties((prev) =>
@@ -132,11 +134,13 @@ import React, {
   //del prop
   const handleDeleteProperty = async (propertyId) => {
     try {
-      const userId = auth.currentUser?.uid;
+      /*const userId = auth.currentUser?.uid;
       if (!userId) return;
  
- 
-      await deleteDoc(doc(db, `users/${userId}/properties`, propertyId));
+      await deleteDoc(doc(db, `users/${userId}/properties`, propertyId));*/
+
+      await delete_property(propertyId);
+
       setProperties((prev) => prev.filter((prop) => prop.id !== propertyId));
  
  

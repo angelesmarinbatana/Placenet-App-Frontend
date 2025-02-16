@@ -11,17 +11,9 @@ import React, {
   FlatList,
   TouchableOpacity,
  } from 'react-native';
- import { db, auth } from "../firebaseConfig";
- import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
- } from "firebase/firestore";
  import DateTimePickerModal from 'react-native-modal-datetime-picker';
  import styles from "../styles/projectStyles";
+ import { fetch_properties, fetch_projects, add_project, update_project, delete_project } from '@/components/BackendCalls';
  
  
  const ProjectManagement = () => {
@@ -43,16 +35,7 @@ import React, {
   // prop for the logged-in user
   async function fetchUserProperties() {
     try {
-      const userId = auth.currentUser?.uid;
-      if (!userId) return;
- 
- 
-      const propertiesSnapshot = await getDocs(collection(db, `users/${userId}/properties`));
-      const propertyList = propertiesSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
- 
+      const propertyList = await fetch_properties();
  
       setProperties(propertyList);
     } catch (error) {
@@ -64,14 +47,7 @@ import React, {
   //project for selected prop
   async function fetchProjects(propertyId) {
     try {
-      const userId = auth.currentUser?.uid;
-      if (!userId) return;
- 
- 
-      const projectsRef = collection(db, `users/${userId}/properties/${propertyId}/projects`);
-      const querySnapshot = await getDocs(projectsRef);
-      const projectList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
- 
+      const projectList = await fetch_projects(propertyId);
  
       setProjects(projectList);
     } catch (error) {
@@ -96,17 +72,9 @@ import React, {
  
  
     try {
-      const userId = auth.currentUser?.uid;
-      const projectsRef = collection(db, `users/${userId}/properties/${selectedProperty.id}/projects`);
+      const newProject = await add_project(selectedProperty.id, projectName, projectDescription, completionDate);
  
- 
-      const newProject = await addDoc(projectsRef, {
-        name: projectName,
-        description: projectDescription,
-        completionDate: completionDate.toISOString(),
-      });
- 
- 
+      
       setProjects([...projects, { id: newProject.id, name: projectName, description: projectDescription, completionDate }]);
       Alert.alert("Success!", "Project added.");
       resetForm();
@@ -125,15 +93,16 @@ import React, {
  
  
     try {
-      const userId = auth.currentUser?.uid;
+      /*const userId = auth.currentUser?.uid;
       const projectRef = doc(db, `users/${userId}/properties/${selectedProperty.id}/projects`, editingProjectId);
      
       await updateDoc(projectRef, {
         name: projectName,
         description: projectDescription,
         completionDate: completionDate.toISOString(),
-      });
- 
+      });*/
+      
+      await update_project(selectedProperty.id, editingProjectId, projectName, projectDescription, completionDate);
  
       setProjects(prev =>
         prev.map(proj =>
@@ -155,10 +124,7 @@ import React, {
   // del proj
   const handleDeleteProject = async (projectId) => {
     try {
-      const userId = auth.currentUser?.uid;
-      const projectRef = doc(db, `users/${userId}/properties/${selectedProperty.id}/projects`, projectId);
-     
-      await deleteDoc(projectRef);
+      await delete_project(selectedProperty.id, projectId);
       setProjects(prev => prev.filter(proj => proj.id !== projectId));
       Alert.alert("Deleted!", "Project has been removed.");
     } catch (error) {
