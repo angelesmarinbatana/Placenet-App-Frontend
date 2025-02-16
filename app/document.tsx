@@ -20,6 +20,7 @@ import React, {
  import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
  import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
  import styles from '../styles/documentStyles';
+ import { fetch_properties, fetch_projects, fetch_documents } from '@/components/BackendCalls';
  
  
  const UploadFile = () => {
@@ -37,17 +38,7 @@ import React, {
  
   async function fetchUserProperties() {
       try {
-        const userId = auth.currentUser?.uid;
-        if (!userId) return;
-   
-   
-        const propertiesSnapshot = await getDocs(collection(db, `users/${userId}/properties`));
-        const propertyList = propertiesSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-   
-   
+        const propertyList = await fetch_properties();
         setProperties(propertyList);
       } catch (error) {
         Alert.alert("Error!", "Failed to fetch properties.");
@@ -55,26 +46,14 @@ import React, {
     }
  
   const fetchProjects = async (propertyId) => {
-    const userId = auth.currentUser?.uid;
-    if (!userId) return;
-    const querySnapshot = await getDocs(collection(db, `users/${userId}/properties/${propertyId}/projects`));
-    console.log(querySnapshot);
-    const projectList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const projectList = await fetch_projects(propertyId);
     setProjects(projectList);
     console.log(projectList);
   };
  
  
   async function fetchDocuments(propertyId, projectId) {
-    const userId = auth.currentUser?.uid;
-    if (!userId) return;
-    
-    console.log("Fetching documents for:", propertyId, projectId);
-    const querySnapshot = await getDocs(
-      collection(db, `users/${userId}/properties/${propertyId}/projects/${projectId}/documents`)
-    );
-    
-    const documentList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const documentList = await fetch_documents(propertyId, projectId);
     setDocuments(documentList);
   }
 

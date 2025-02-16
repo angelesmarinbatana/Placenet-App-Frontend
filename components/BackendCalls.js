@@ -131,3 +131,28 @@ export async function delete_project(propertyId, id){     //delete
 
 //documents
 
+export async function fetch_documents(propertyId, projectId){
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+    
+    console.log("Fetching documents for:", propertyId, projectId);
+    const querySnapshot = await getDocs(
+        collection(db, `users/${userId}/properties/${propertyId}/projects/${projectId}/documents`)
+    );
+    
+    const documentList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    console.log(`users/${userId}/properties/${propertyId}/projects/${projectId}/documents`);
+    return documentList;
+}
+
+export async function add_document(selectedDocuments) {
+    for (const document of selectedDocuments) {
+        const fileUrl = await uploadFile(document.uri, document.name);
+        console.log("Upload Path: users/" + userId + "/properties/" + selectedProperty.id + "/projects/" + selectedProject.id + "/documents");
+        await addDoc(collection(db, `users/${userId}/properties/${selectedProperty.id}/projects/${selectedProject.id}/documents`), {
+            fileName: document.name,
+            filePath: fileUrl,
+        });
+    }
+    
+}
